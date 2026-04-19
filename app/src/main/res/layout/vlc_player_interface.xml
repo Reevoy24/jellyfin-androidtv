@@ -31,6 +31,11 @@
             android:layout_height="match_parent"
             app:use_controller="false" />
 
+        <org.jellyfin.androidtv.ui.playback.overlay.SkipOverlayView
+            android:id="@+id/skip_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/leanback_fragment"
             android:name="org.jellyfin.androidtv.ui.playback.overlay.LeanbackOverlayFragment"
@@ -116,8 +121,4 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <org.jellyfin.androidtv.ui.playback.overlay.SkipOverlayView
-        android:id="@+id/skip_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </FrameLayout>

@@ -110,12 +110,14 @@ class SkipOverlayView @JvmOverloads constructor(
 
 	val visible: Boolean
 		get() {
-			val enabled = _skipUiEnabled.value
 			val targetPosition = _targetPosition.value
 			val currentPosition = _currentPosition.value
 
-			return enabled && targetPosition != null && currentPosition <= (targetPosition - MediaSegmentRepository.SkipMinDuration)
+			return targetPosition != null && currentPosition <= (targetPosition - MediaSegmentRepository.SkipMinDuration)
 		}
+
+	val interactive: Boolean
+		get() = _skipUiEnabled.value && visible
 
 	@Composable
 	override fun Content() {

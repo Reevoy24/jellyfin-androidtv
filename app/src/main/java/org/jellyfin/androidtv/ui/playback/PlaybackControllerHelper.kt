@@ -15,12 +15,16 @@ import org.jellyfin.androidtv.util.sdk.start
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.MediaSegmentDto
+import org.jellyfin.sdk.model.api.MediaSegmentType
 import org.jellyfin.sdk.model.api.MediaStreamType
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
+import org.jellyfin.sdk.model.extensions.ticks
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.UUID
+import kotlin.time.Duration
 
 fun PlaybackController.getLiveTvChannel(
 	id: UUID,
@@ -185,35 +189,102 @@ fun PlaybackController.applyMediaSegments(
 			}
 		}
 
+		// Some libraries only expose anime-style intro markers as chapters like "Opening"
+		// instead of Jellyfin media segments. Reuse the same skip overlay flow as a fallback.
+		if (mediaSegments.none { it.type == MediaSegmentType.INTRO }) {
+			item.findIntroChapterRange()?.let { (start, end) ->
+				when (mediaSegmentRepository.getDefaultSegmentTypeAction(MediaSegmentType.INTRO)) {
+					MediaSegmentAction.SKIP -> {
+						if ((end - start) >= MediaSegmentRepository.SkipMinDuration) {
+							addSkipAction(start, end)
+						}
+					}
+
+					MediaSegmentAction.ASK_TO_SKIP -> {
+						if ((end - start) >= MediaSegmentRepository.AskToSkipMinDuration) {
+							addAskToSkipAction(start, end)
+						}
+					}
+
+					MediaSegmentAction.NOTHING -> Unit
+				}
+			}
+		}
+
 		callback()
 	}
 }
 
 @OptIn(UnstableApi::class)
 private fun PlaybackController.addSkipAction(mediaSegment: MediaSegmentDto) {
+	addSkipAction(mediaSegment.start, mediaSegment.end)
+}
+
+@OptIn(UnstableApi::class)
+private fun PlaybackController.addSkipAction(start: Duration, end: Duration) {
 	mVideoManager.mExoPlayer
 		.createMessage { _, _ ->
 			// We can't seek directly on the ExoPlayer instance as not all media is seekable
 			// the seek function in the PlaybackController checks this and optionally starts a transcode
 			// at the requested position
 			fragment.lifecycleScope.launch(Dispatchers.Main) {
-				seek(mediaSegment.end.inWholeMilliseconds, true)
+				seek(end.inWholeMilliseconds, true)
 			}
 		}
 		// Segments at position 0 will never be hit by ExoPlayer so we need to add a minimum value
-		.setPosition(mediaSegment.start.inWholeMilliseconds.coerceAtLeast(1))
+		.setPosition(start.inWholeMilliseconds.coerceAtLeast(1))
 		.setDeleteAfterDelivery(false)
 		.send()
 }
 
 @OptIn(UnstableApi::class)
 private fun PlaybackController.addAskToSkipAction(mediaSegment: MediaSegmentDto) {
+	addAskToSkipAction(mediaSegment.start, mediaSegment.end)
+}
+
+@OptIn(UnstableApi::class)
+private fun PlaybackController.addAskToSkipAction(start: Duration, end: Duration) {
 	mVideoManager.mExoPlayer
 		.createMessage { _, _ ->
-			fragment?.askToSkip(mediaSegment.end)
+			fragment?.askToSkip(end)
 		}
 		// Segments at position 0 will never be hit by ExoPlayer so we need to add a minimum value
-		.setPosition(mediaSegment.start.inWholeMilliseconds.coerceAtLeast(1))
+		.setPosition(start.inWholeMilliseconds.coerceAtLeast(1))
 		.setDeleteAfterDelivery(false)
 		.send()
+}
+
+private fun BaseItemDto.findIntroChapterRange(): Pair<Duration, Duration>? {
+	if (type != BaseItemKind.EPISODE) return null
+
+	val chapters = chapters.orEmpty()
+	val introIndex = chapters.indexOfFirst { chapter ->
+		chapter.name.isIntroChapterName()
+	}
+	if (introIndex == -1) return null
+
+	val introStart = chapters[introIndex].startPositionTicks.ticks
+	val introEnd = chapters.getOrNull(introIndex + 1)?.startPositionTicks?.ticks
+		?: runTimeTicks?.ticks
+		?: return null
+
+	if (introEnd <= introStart) return null
+	if ((introEnd - introStart) < MediaSegmentRepository.SkipMinDuration) return null
+
+	return introStart to introEnd
+}
+
+private fun String?.isIntroChapterName(): Boolean {
+	if (this.isNullOrBlank()) return false
+
+	val normalized = trim()
+		.lowercase()
+		.replace(Regex("\\s+"), " ")
+
+	return normalized == "op"
+		|| normalized.startsWith("opening")
+		|| normalized.startsWith("intro")
+		|| normalized.contains("opening credits")
+		|| normalized.contains("creditless opening")
+		|| normalized.contains("title sequence")
 }
