@@ -401,7 +401,6 @@
     <string name="pref_behavior">行为</string>
     <string name="pref_accounts">账户</string>
     <string name="pref_customization">自定义</string>
-    <string name="pref_show_backdrop_description">更改指定项目的背景图片</string>
     <string name="sort_accounts_by">按帐户排序</string>
     <string name="home_section_resume_book">继续阅读</string>
     <string name="lbl_shuffle_queue">切换随机播放</string>
@@ -609,4 +608,6 @@
     <string name="video_player_external">外部应用程序</string>
     <string name="playback_video_player_external_empty">您的设备上没有安装任何可以播放 Jellyfin 视频的播放器应用程序。</string>
     <string name="filters">筛选器</string>
+    <string name="backdrop_behavior_with_blur">模糊背景</string>
+    <string name="backdrop_behavior_without_blur">无模糊背景</string>
 </resources>

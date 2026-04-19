@@ -417,7 +417,6 @@
     <string name="color_blue">Плаво</string>
     <string name="pref_customization">Прилагођавање</string>
     <string name="desc_audio_night_mode">Аутоматска јечина излазног звука</string>
-    <string name="pref_show_backdrop_description">Промени позадну на одабраним стварима</string>
     <string name="pref_home_description">Подеси одељак одгледано</string>
     <string name="pref_login">Улогуј се</string>
     <string name="state_disabled">Искључено</string>
@@ -628,4 +627,6 @@
     <string name="video_player_external">Спољна апликација</string>
     <string name="playback_video_player_external_empty">На вашем уређају нема ниједне апликације која може да отвори видео снимке из Jellyfin-а.</string>
     <string name="filters">Филтери</string>
+    <string name="backdrop_behavior_with_blur">Замућена позадина</string>
+    <string name="backdrop_behavior_without_blur">Незамућена позадина</string>
 </resources>

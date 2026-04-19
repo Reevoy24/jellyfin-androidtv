@@ -3,9 +3,12 @@ package org.jellyfin.androidtv.preference
 import android.content.Context
 import androidx.preference.PreferenceManager
 import org.jellyfin.androidtv.preference.UserPreferences.Companion.screensaverInAppEnabled
+import org.jellyfin.androidtv.preference.constant.AVCLevel
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
+import org.jellyfin.androidtv.preference.constant.BackdropBehavior
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
+import org.jellyfin.androidtv.preference.constant.HEVCLevel
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
 import org.jellyfin.androidtv.preference.constant.RefreshRateSwitchingBehavior
 import org.jellyfin.androidtv.preference.constant.StillWatchingBehavior
@@ -40,9 +43,9 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var appTheme = enumPreference("app_theme", AppTheme.DARK)
 
 		/**
-		 * Enable background images while browsing
+		 * Behavior of app background while browsing
 		 */
-		var backdropEnabled = booleanPreference("pref_show_backdrop", true)
+		var backdropBehavior = enumPreference("backdrop_behavior", BackdropBehavior.BACKDROP_WITH_BLUR)
 
 		/* Playback - General*/
 		/**
@@ -101,6 +104,16 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Whether ExoPlayer should prefer FFmpeg renderers to core ones.
 		 */
 		var preferExoPlayerFfmpeg = booleanPreference("exoplayer_prefer_ffmpeg", defaultValue = false)
+
+		/**
+		 * User defined AVC level override. AUTO uses device-reported capabilities.
+		 */
+		var userAVCLevel = enumPreference("user_avc_level", AVCLevel.AUTO)
+
+		/**
+		 * User defined HEVC level override. AUTO uses device-reported capabilities.
+		 */
+		var userHEVCLevel = enumPreference("user_hevc_level", HEVCLevel.AUTO)
 
 		/* Playback - Audio related */
 		/**
@@ -232,7 +245,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var assDirectPlay = booleanPreference("libass_enabled", false)
 
 		/**
-  		 * Enable PGS subtitle direct-play.
+		 * Enable PGS subtitle direct-play.
 		 */
 		var pgsDirectPlay = booleanPreference("pgs_enabled", true)
 	}
@@ -263,6 +276,13 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 			migration(toVersion = 9) {
 				// Reset subtitle text size as we changed from fractional sizing to absolute sizing
 				remove("subtitles_text_size")
+
+				// Set the BackdropBehavior if it was enabled in a previous version
+				val backdropEnabled = it.getBoolean("pref_show_backdrop", true)
+				putString(
+					"backdrop_behavior",
+					if (backdropEnabled) BackdropBehavior.BACKDROP_WITH_BLUR.name else BackdropBehavior.DISABLED.name
+				)
 			}
 		}
 	}
