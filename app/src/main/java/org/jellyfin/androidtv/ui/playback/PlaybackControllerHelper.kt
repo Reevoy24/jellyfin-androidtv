@@ -15,7 +15,6 @@ import org.jellyfin.androidtv.util.sdk.start
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.MediaSegmentDto
 import org.jellyfin.sdk.model.api.MediaSegmentType
 import org.jellyfin.sdk.model.api.MediaStreamType
@@ -189,28 +188,6 @@ fun PlaybackController.applyMediaSegments(
 			}
 		}
 
-		// Some libraries only expose anime-style intro markers as chapters like "Opening"
-		// instead of Jellyfin media segments. Reuse the same skip overlay flow as a fallback.
-		if (mediaSegments.none { it.type == MediaSegmentType.INTRO }) {
-			item.findIntroChapterRange()?.let { (start, end) ->
-				when (mediaSegmentRepository.getDefaultSegmentTypeAction(MediaSegmentType.INTRO)) {
-					MediaSegmentAction.SKIP -> {
-						if ((end - start) >= MediaSegmentRepository.SkipMinDuration) {
-							addSkipAction(start, end)
-						}
-					}
-
-					MediaSegmentAction.ASK_TO_SKIP -> {
-						if ((end - start) >= MediaSegmentRepository.AskToSkipMinDuration) {
-							addAskToSkipAction(start, end)
-						}
-					}
-
-					MediaSegmentAction.NOTHING -> Unit
-				}
-			}
-		}
-
 		callback()
 	}
 }
@@ -252,39 +229,4 @@ private fun PlaybackController.addAskToSkipAction(start: Duration, end: Duration
 		.setPosition(start.inWholeMilliseconds.coerceAtLeast(1))
 		.setDeleteAfterDelivery(false)
 		.send()
-}
-
-private fun BaseItemDto.findIntroChapterRange(): Pair<Duration, Duration>? {
-	if (type != BaseItemKind.EPISODE) return null
-
-	val chapters = chapters.orEmpty()
-	val introIndex = chapters.indexOfFirst { chapter ->
-		chapter.name.isIntroChapterName()
-	}
-	if (introIndex == -1) return null
-
-	val introStart = chapters[introIndex].startPositionTicks.ticks
-	val introEnd = chapters.getOrNull(introIndex + 1)?.startPositionTicks?.ticks
-		?: runTimeTicks?.ticks
-		?: return null
-
-	if (introEnd <= introStart) return null
-	if ((introEnd - introStart) < MediaSegmentRepository.SkipMinDuration) return null
-
-	return introStart to introEnd
-}
-
-private fun String?.isIntroChapterName(): Boolean {
-	if (this.isNullOrBlank()) return false
-
-	val normalized = trim()
-		.lowercase()
-		.replace(Regex("\\s+"), " ")
-
-	return normalized == "op"
-		|| normalized.startsWith("opening")
-		|| normalized.startsWith("intro")
-		|| normalized.contains("opening credits")
-		|| normalized.contains("creditless opening")
-		|| normalized.contains("title sequence")
 }
