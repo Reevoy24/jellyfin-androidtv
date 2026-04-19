@@ -134,5 +134,5 @@ class MainActivity : FragmentActivity() {
 		onKeyEvent(keyCode, event) || super.onKeyUp(keyCode, event)
 
 	override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean =
-		onKeyEvent(keyCode, event) || super.onKeyUp(keyCode, event)
+		onKeyEvent(keyCode, event) || super.onKeyLongPress(keyCode, event)
 }
