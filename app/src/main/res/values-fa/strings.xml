@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_none">وجود ندارد</string>
     <string name="lbl_recordings">ضبط شده ها</string>
@@ -463,4 +463,7 @@
     <string name="lbl_subtitle_text_color">رنگ نوشته زیرنویس</string>
     <string name="lbl_subtitle_text_stroke_color">رنگ زیرنویس</string>
     <string name="lbl_subtitle_background_color">رنگ پشت صفحه زیرنویس</string>
+
+    <string name="lbl_all_genres">Ù‡Ù…Ù‡ Ú˜Ø§Ù†Ø±Ù‡Ø§</string>
 </resources>
+

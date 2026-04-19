@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_loading_elipses">Ładowanie…</string>
     <string name="lbl_ok">Ok</string>
@@ -610,4 +610,7 @@
     <string name="lbl_still_watching_very_long">8 odcinków lub 240 minut</string>
     <string name="still_watching_label">Czy nadal oglądasz?</string>
     <string name="pref_subtitles_position">Przesunięcie od dołu</string>
+
+    <string name="lbl_all_genres">Wszystkie gatunki</string>
 </resources>
+

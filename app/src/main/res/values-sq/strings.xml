@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_home">Faqja Kryesore</string>
     <string name="lbl_continue_watching">Vazhdo ta shikosh</string>
@@ -193,4 +193,7 @@
     <string name="lbl_no_recordings">Asnjë rregjistrim i disponueshëm</string>
     <string name="lbl_programs">Programet</string>
     <string name="lbl_enable_cinema_mode">Modaliteti kinema</string>
+
+    <string name="lbl_all_genres">TÃ« gjitha zhanret</string>
 </resources>
+

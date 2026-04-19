@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_shuffle_all">Cymysgu Pobeth</string>
     <string name="lbl_play_all">Chwarae Pob Un</string>
@@ -150,4 +150,7 @@
     <string name="state_disabled">Wedi\'i analluogi</string>
     <string name="lbl_cancel_recording">Canslo recordio</string>
     <string name="because_you_watched">Oherwydd i chi wylio %1$s</string>
+
+    <string name="lbl_all_genres">Pob genre</string>
 </resources>
+

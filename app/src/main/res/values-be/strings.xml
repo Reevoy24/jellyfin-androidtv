@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="loading">Загрузка…</string>
     <string name="lbl_search">Пошук</string>
@@ -609,4 +609,7 @@
     <string name="segment_type_outro">Завяршэнне</string>
     <string name="still_watching_label">Ці працягваеце глядзець?</string>
     <string name="speech_error_unavailable">Распазнаванне маўлення недаступнае на вашай прыладзе.</string>
+
+    <string name="lbl_all_genres">Ð£ÑÐµ Ð¶Ð°Ð½Ñ€Ñ‹</string>
 </resources>
+

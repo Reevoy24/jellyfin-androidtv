@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="pref_authentication_cat">Идентификация</string>
     <string name="settings_title">Настройки</string>
@@ -307,4 +307,7 @@
     <string name="connect_manually_by_address">Въведете адреса на сървъра</string>
     <string name="auto_sign_in">Автоматично вписване</string>
     <string name="image_size_medium">Среден</string>
+
+    <string name="lbl_all_genres">Ð’ÑÐ¸Ñ‡ÐºÐ¸ Ð¶Ð°Ð½Ñ€Ð¾Ð²Ðµ</string>
 </resources>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_item">আইটেম</string>
     <string name="lbl_items">আইটেম গুলী</string>
@@ -119,4 +119,7 @@
     <string name="lbl_tune_to_channel">চ্যানেল টিউন করুন</string>
     <string name="msg_recording_now">রেকর্ডিং হচ্ছে</string>
     <string name="lbl_play_first_unwatched">প্রথম অদেখা চালু করুন</string>
+
+    <string name="lbl_all_genres">à¦¸à¦¬ à¦§à¦°à¦¨</string>
 </resources>
+

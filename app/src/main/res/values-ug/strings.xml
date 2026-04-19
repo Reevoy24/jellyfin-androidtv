@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_continue_watching">داۋامىنى كۆرۈش</string>
     <string name="lbl_latest">يېقىندا قويۇلغانلىرى</string>
@@ -136,4 +136,7 @@
     <string name="action_connect">ئۇلاڭ</string>
     <string name="server_unsupported_notification">بۇ مۇلازىمېتىر قوللىمايدىغان Jellyfin نەشىرىنى%2$s ئىشلىتىدۇ. بۇ دېتالنى داۋاملىق ئىشلىتىش ئۈچۈن Jellyfin %1$s ياكى يېڭى نەشرىگە يېڭىلاڭ.</string>
     <string name="app_notification_uimode_invalid">بۇ ئەپ تېلېۋىزور ئۈچۈن ئەلالاشتۇرۇلغان. كۆچمە ئەپنى باشقا ئۈسكۈنىلەردە ئىشلىتىشنى تەۋسىيە قىلىمىز.</string>
+
+    <string name="lbl_all_genres">Ø¨Ø§Ø±Ù„Ù‰Ù‚ Ø¦Û‡Ø³Ù„Û‡Ø¨ Ø´Û•ÙƒÙ„Ù‰</string>
 </resources>
+

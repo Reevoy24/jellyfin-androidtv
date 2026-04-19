@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="lbl_albums">Albume</string>
     <string name="lbl_artists">Artiști</string>
@@ -599,4 +599,7 @@
     <string name="lbl_still_watching_default">3 episoade sau 90 de minute</string>
     <string name="lbl_still_watching_long">5 episoade sau 150 de minute</string>
     <string name="lbl_still_watching_very_long">8 episoade sau 240 de minute</string>
+
+    <string name="lbl_all_genres">Toate genurile</string>
 </resources>
+

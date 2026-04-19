@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="video_error_unknown_error">Kunde inte ladda videon</string>
     <string name="btn_cancel">Avbryt</string>
@@ -590,4 +590,7 @@
     <string name="preference_enable_pgs">Direktspela PGS-undertexter</string>
     <string name="still_watching_label">Tittar du fortfarande?</string>
     <string name="pref_subtitles_position">Avstånd från botten</string>
+
+    <string name="lbl_all_genres">Alla genrer</string>
 </resources>
+

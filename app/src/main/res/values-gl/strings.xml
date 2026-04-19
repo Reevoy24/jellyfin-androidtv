@@ -1,2 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_all_genres">Todos os xÃ©neros</string>
+</resources>
+

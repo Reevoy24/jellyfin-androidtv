@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_never">Nikada</string>
     <string name="lbl_loading_elipses">Učitavam…</string>
@@ -582,4 +582,7 @@
     <string name="lbl_still_watching_long">5 epizoda ili 150 minuta</string>
     <string name="lbl_still_watching_very_long">8 epizoda ili 240 minuta</string>
     <string name="pref_subtitles_position">Pomak od dna</string>
+
+    <string name="lbl_all_genres">Svi Å¾anrovi</string>
 </resources>
+

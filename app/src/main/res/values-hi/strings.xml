@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="loading">लोड हो रहा है…</string>
     <string name="pref_playback">प्लेबैक</string>
@@ -588,4 +588,7 @@
     <string name="pref_screensaver_ageratingmax">अधिकतम आयु रेटिंग</string>
     <string name="pref_screensaver_ageratingmax_zero">सभी उम्र</string>
     <string name="pref_subtitles_position">नीचे से अंतर</string>
+
+    <string name="lbl_all_genres">à¤¸à¤­à¥€ à¤¶à¥ˆà¤²à¤¿à¤¯à¤¾à¤‚</string>
 </resources>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="byletter_letters">అఆఇఈఉఊఎఏఐఒఓఔఅఅంఅఃకఖగఘఙచఛజఝఞటఠడఢణతథదధనపఫబభమయరలవశషసహళక్షఱ</string>
     <string name="lbl_continue_watching">చూడటం కొనసాగించు</string>
@@ -37,4 +37,7 @@
     <string name="lbl_pause">పాజ్</string>
     <string name="lbl_cancel">రద్దు</string>
     <string name="lbl_cancel_recording">రికార్డింగ్‌ని రద్దు చేయండి</string>
+
+    <string name="lbl_all_genres">à°…à°¨à±à°¨à°¿ à°¶à±ˆà°²à±à°²à±</string>
 </resources>
+

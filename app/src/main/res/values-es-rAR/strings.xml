@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_tomorrow">Mañana</string>
     <string name="lbl_today">Hoy</string>
@@ -551,4 +551,7 @@
     <string name="pref_screensaver_ageratingmax">Edad máxima calificada</string>
     <string name="pref_screensaver_ageratingmax_unlimited">Desactivar el máximo</string>
     <string name="pref_screensaver_ageratingmax_entry">Hasta los %1$d</string>
+
+    <string name="lbl_all_genres">Todos los gÃ©neros</string>
 </resources>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_latest">അടുത്തിടെ ചേർത്തത്</string>
     <string name="msg_not_implemented">" നടപ്പിലാക്കാത്ത"</string>
@@ -348,4 +348,7 @@
     <string name="pref_live_tv_cat">തത്സമയ ടി വി</string>
     <string name="msg_subtitles_loading">സബ്ടൈറ്റിലുകൾ ലോഡ് ചെയ്യുന്നു…</string>
     <string name="because_you_watched">കാരണം നിങ്ങൾ %1$s കണ്ടു</string>
+
+    <string name="lbl_all_genres">à´Žà´²àµà´²à´¾ à´µà´¿à´­à´¾à´—à´™àµà´™à´³àµà´‚</string>
 </resources>
+

@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="btn_cancel">ਰੋਕੋ</string>
     <string name="loading">ਖੁਲ ਰਿਹਾ ਹੈ…</string>
     <string name="video_error_unknown_error">ਵੀਡੀਓ ਲੋਡ ਨਾਈ ਹੋ ਰਹੀ</string>
+
+    <string name="lbl_all_genres">à¨¸à¨¾à¨°à©€à¨†à¨‚ à¨¸à¨¼à©ˆà¨²à©€à¨†à¨‚</string>
 </resources>
+

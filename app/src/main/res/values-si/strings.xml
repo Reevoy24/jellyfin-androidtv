@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="video_error_unknown_error">වීඩියෝව බාගත කිරීමට අසමත් විය</string>
+
+    <string name="lbl_all_genres">à·ƒà·’à¶ºà¶½à·” à¶´à·Šâ€à¶»à¶·à·šà¶¯</string>
 </resources>
+

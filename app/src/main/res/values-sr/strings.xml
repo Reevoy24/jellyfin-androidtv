@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_other_options">Остале опције</string>
     <string name="lbl_last_played">"Последње гледано "</string>
@@ -599,4 +599,7 @@
         <item quantity="other">%1$s минута</item>
     </plurals>
     <string name="episode_name_special">специјал</string>
+
+    <string name="lbl_all_genres">Ð¡Ð²Ð¸ Ð¶Ð°Ð½Ñ€Ð¾Ð²Ð¸</string>
 </resources>
+

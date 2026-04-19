@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_program_ended">Chương trình kết thúc</string>
     <string name="msg_will_record">Sẽ ghi lại</string>
@@ -580,4 +580,7 @@
     <string name="lbl_still_watching_very_long">8 tập hoặc 240 phút</string>
     <string name="still_watching_label">Bạn vẫn đang xem?</string>
     <string name="pref_subtitles_position">Bù từ dưới cùng</string>
+
+    <string name="lbl_all_genres">Táº¥t cáº£ thá»ƒ loáº¡i</string>
 </resources>
+

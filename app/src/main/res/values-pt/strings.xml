@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="seconds">
         <item quantity="one">%1$s segundo</item>
@@ -67,4 +67,7 @@
     <string name="lbl_cancel_recording">Cancelar a gravação</string>
     <string name="lbl_cancel_series">Cancelar as séries</string>
     <string name="lbl_record">Gravar</string>
+
+    <string name="lbl_all_genres">Todos os gÃªneros</string>
 </resources>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="byletter_letters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="btn_cancel">ரத்துசெய்</string>
@@ -588,4 +588,7 @@
     <string name="lbl_still_watching_very_long">8 எபிசோடுகள் அல்லது 240 நிமிடங்கள்</string>
     <string name="fast_forward">முன்னோக்கி செல்</string>
     <string name="still_watching_label">நீங்க இன்னும் பார்த்துட்டு இருக்கீங்களா?</string>
+
+    <string name="lbl_all_genres">à®…à®©à¯ˆà®¤à¯à®¤à¯ à®µà®•à¯ˆà®•à®³à¯à®®à¯</string>
 </resources>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="video_error_unknown_error">Αποτυχία φόρτωσης βίντεο</string>
     <string name="btn_cancel">Ακύρωση</string>
@@ -534,4 +534,7 @@
     <string name="prefer_exoplayer_ffmpeg_content">Χρησιμοποίησε FFmpeg για την αποκωδικοποίησή του ήχου, ακόμα και αν οι κωδικοποιητές δεν είναι διαθέσιμοι.</string>
     <string name="default_video_zoom">Προεπιλεγμένη λειτουργία Ζουμ</string>
     <string name="video_start_delay">Καθυστέρηση εκκίνησής βίντεο</string>
+
+    <string name="lbl_all_genres">ÎŒÎ»Î± Ï„Î± ÎµÎ¯Î´Î·</string>
 </resources>
+

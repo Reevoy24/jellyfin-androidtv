@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_settings">ಆದ್ಯತೆಗಳು</string>
     <string name="state_disabled">ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ</string>
@@ -30,4 +30,7 @@
     <string name="lbl_status">%1$s / %2$s</string>
     <string name="lbl_latest_in">%1$s ನಲ್ಲಿ ಇತ್ತೀಚೆಗೆ ಸೇರಿಸಲಾಗಿದೆ</string>
     <string name="lbl_by_name">ಹೆಸರಿನಿಂದ</string>
+
+    <string name="lbl_all_genres">à²Žà²²à³à²²à²¾ à²¶à³ˆà²²à²¿à²—à²³à³</string>
 </resources>
+

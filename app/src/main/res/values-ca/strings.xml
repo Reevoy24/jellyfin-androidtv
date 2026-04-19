@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="pref_authentication_cat">Autenticació</string>
     <string name="settings_title">Preferències</string>
@@ -599,4 +599,7 @@
     <string name="lbl_still_watching_very_long">8 episodis o 240 minuts</string>
     <string name="still_watching_label">Encara ho esteu mirant?</string>
     <string name="pref_subtitles_position">Desplaçament des de baix</string>
+
+    <string name="lbl_all_genres">Tots els gÃ¨neres</string>
 </resources>
+

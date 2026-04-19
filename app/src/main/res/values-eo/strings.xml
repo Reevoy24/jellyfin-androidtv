@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="btn_got_it">Kompreneblas</string>
     <string name="lbl_instant_mix">Tujmiksaĵo</string>
@@ -440,4 +440,7 @@
     <string name="pref_telemetry_description">Sendi kraŝraportojn, inkluzivi protokolojn</string>
     <string name="server_setup_incomplete">La agordo de ĉi tiu servilo ne estas finita. Malfermu Jellyfin en TTT-foliumilo por fini agordon antaŭ ensaluti.</string>
     <string name="episode_name_special">speciala</string>
+
+    <string name="lbl_all_genres">Äˆiuj Äenroj</string>
 </resources>
+

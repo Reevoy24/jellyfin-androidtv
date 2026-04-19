@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_favorite">Омилено</string>
     <string name="lbl_upcoming">Претстојни</string>
@@ -526,4 +526,7 @@
     <string name="clear_image_cache_content">Користено: %1$s</string>
     <string name="lbl_runtime">Времетраење</string>
     <string name="dolby_vision">Dolby Vision</string>
+
+    <string name="lbl_all_genres">Ð¡Ð¸Ñ‚Ðµ Ð¶Ð°Ð½Ñ€Ð¾Ð²Ð¸</string>
 </resources>
+

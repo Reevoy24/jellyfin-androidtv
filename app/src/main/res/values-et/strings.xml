@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_cancel_recording">Tühista salvestamine</string>
     <string name="lbl_cancel">Tühista</string>
@@ -590,4 +590,7 @@
     <string name="pref_mediasegment_actions">Meediasegmendi toimingud</string>
     <string name="segment_type_unknown">Tundmatud segmendid</string>
     <string name="preference_enable_libass">Luba Advanced SubStation Alpha (ASS) subtiitrite renderdamine kliendil</string>
+
+    <string name="lbl_all_genres">KÃµik Å¾anrid</string>
 </resources>
+

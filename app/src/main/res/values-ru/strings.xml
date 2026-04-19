@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="loading">Загружается…</string>
     <string name="video_error_unknown_error">Не удалось загрузить видео</string>
@@ -610,4 +610,7 @@
     <string name="still_watching_label">Вы всё ещё смотрите?</string>
     <string name="lbl_still_watching_default">3 эпизода или 90 минут</string>
     <string name="pref_subtitles_position">Отступ снизу</string>
+
+    <string name="lbl_all_genres">Ð’ÑÐµ Ð¶Ð°Ð½Ñ€Ñ‹</string>
 </resources>
+

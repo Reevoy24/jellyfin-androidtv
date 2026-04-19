@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="video_error_unknown_error">Error al cargar el video</string>
     <string name="btn_cancel">Cancelar</string>
@@ -574,4 +574,7 @@
     <string name="segment_action_ask_to_skip">Preguntar para saltar</string>
     <string name="preference_enable_trickplay">Habilitar previsualizaciones en el reproductor</string>
     <string name="skip_forward_length">Duración del salto hacia adelante</string>
+
+    <string name="lbl_all_genres">Todos los gÃ©neros</string>
 </resources>
+

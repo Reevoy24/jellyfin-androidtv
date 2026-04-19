@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="video_error_unknown_error">Nepodařilo se načíst video</string>
     <string name="btn_cancel">Zrušit</string>
@@ -600,4 +600,7 @@
     <string name="lbl_still_watching_very_long">8 epizod nebo 240 minut</string>
     <string name="still_watching_label">Stále se díváte?</string>
     <string name="pref_subtitles_position">Odsazení odspodu</string>
+
+    <string name="lbl_all_genres">VÅ¡echny Å¾Ã¡nry</string>
 </resources>
+

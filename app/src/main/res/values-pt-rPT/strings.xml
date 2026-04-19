@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="loading">A carregar…</string>
     <string name="video_error_unknown_error">Falha ao carregar o vídeo</string>
@@ -599,4 +599,7 @@
     <string name="lbl_still_watching_very_long">8 episódios ou 240 minutos</string>
     <string name="still_watching_label">Ainda estás a ver?</string>
     <string name="pref_subtitles_position">Desvio do fundo</string>
+
+    <string name="lbl_all_genres">Todos os gÃ©neros</string>
 </resources>
+

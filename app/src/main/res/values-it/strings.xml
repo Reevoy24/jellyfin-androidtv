@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="video_error_unknown_error">Caricamento video fallito</string>
     <string name="btn_cancel">Annulla</string>
@@ -600,4 +600,7 @@
     <string name="lbl_still_watching_very_long">8 episodi o 240 minuti</string>
     <string name="still_watching_label">Stai ancora guardando?</string>
     <string name="pref_subtitles_position">Distanza dal basso</string>
+
+    <string name="lbl_all_genres">Tutti i generi</string>
 </resources>
+

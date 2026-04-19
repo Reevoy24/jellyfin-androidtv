@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_upcoming">Tuoj bus</string>
     <string name="lbl_seasons">Sezonai</string>
@@ -598,4 +598,7 @@
     <string name="rewind">Persukti</string>
     <string name="preference_enable_libass">Įjungti išplėstinį SubStation Alpha subtitrų kliento atvaizdavimą</string>
     <string name="still_watching_label">Ar vis dar žiūrite?</string>
+
+    <string name="lbl_all_genres">Visi Å¾anrai</string>
 </resources>
+

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_episode_not_record">Bu gösteri KAYDEDİLMEYECEK</string>
     <string name="lbl_schedule">Planlama</string>
@@ -590,4 +590,7 @@
     <string name="lbl_still_watching_very_long">8 bölüm veya 240 dakika</string>
     <string name="still_watching_label">Hala izliyor musunuz?</string>
     <string name="pref_subtitles_position">Alttan uzaklık</string>
+
+    <string name="lbl_all_genres">TÃ¼m tÃ¼rler</string>
 </resources>
+

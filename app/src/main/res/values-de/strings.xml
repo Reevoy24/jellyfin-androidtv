@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="video_error_unknown_error">Fehler beim Laden des Videos</string>
     <string name="btn_cancel">Abbrechen</string>
@@ -15,6 +15,7 @@
     <string name="lbl_by_letter">Nach Buchstabe</string>
     <string name="lbl_suggested">Vorgeschlagen</string>
     <string name="lbl_genres">Genre</string>
+    <string name="lbl_all_genres">Alle Genres</string>
     <string name="lbl_search">Suche</string>
     <string name="msg_not_implemented">" Nicht implementiert"</string>
     <string name="lbl_latest">Kürzlich hinzugefügt</string>
