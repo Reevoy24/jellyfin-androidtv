@@ -100,7 +100,4 @@ class SearchViewModel(
 
 		return jellyseerrRepository.search(query)
 	}
-
-	suspend fun requestMedia(result: JellyseerrSearchResult): Result<Unit> =
-		jellyseerrRepository.request(result)
 }

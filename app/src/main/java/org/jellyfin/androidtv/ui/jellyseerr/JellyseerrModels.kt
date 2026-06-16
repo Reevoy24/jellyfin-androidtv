@@ -106,3 +106,51 @@ data class JellyseerrRequestBody(
 	/** "all" for a whole series, or an array of season numbers. Omitted for movies. */
 	val seasons: JsonElement? = null,
 )
+
+/** Response of `GET /JellyfinEnhanced/jellyseerr/settings/partial-requests`. */
+@Serializable
+data class JellyseerrRequestSettings(
+	val partialRequestsEnabled: Boolean = false,
+	val enableSpecialEpisodes: Boolean = false,
+)
+
+/** Response of `GET /JellyfinEnhanced/jellyseerr/tv/{tmdbId}` (subset). */
+@Serializable
+data class JellyseerrTvDetails(
+	val id: Int = 0,
+	val name: String? = null,
+	val overview: String? = null,
+	val posterPath: String? = null,
+	val backdropPath: String? = null,
+	val firstAirDate: String? = null,
+	val seasons: List<JellyseerrSeason> = emptyList(),
+	val mediaInfo: JellyseerrShowMediaInfo? = null,
+) {
+	/** Per-season availability status keyed by season number. */
+	fun statusForSeason(seasonNumber: Int): JellyseerrMediaStatus =
+		JellyseerrMediaStatus.fromCode(
+			mediaInfo?.seasons?.firstOrNull { it.seasonNumber == seasonNumber }?.status
+		)
+}
+
+@Serializable
+data class JellyseerrSeason(
+	val seasonNumber: Int = 0,
+	val name: String? = null,
+	val episodeCount: Int = 0,
+) {
+	/** Season 0 is "Specials"; only offered when the server enables special episodes. */
+	val isSpecial: Boolean get() = seasonNumber == 0
+}
+
+@Serializable
+data class JellyseerrShowMediaInfo(
+	val status: Int? = null,
+	val seasons: List<JellyseerrSeasonStatus> = emptyList(),
+)
+
+@Serializable
+data class JellyseerrSeasonStatus(
+	val seasonNumber: Int = 0,
+	val status: Int? = null,
+)

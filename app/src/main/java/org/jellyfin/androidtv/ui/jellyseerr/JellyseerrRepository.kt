@@ -4,6 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.HttpMethod
@@ -21,8 +23,17 @@ interface JellyseerrRepository {
 	/** Searches Jellyseerr for movies and series. Returns an empty list on failure. */
 	suspend fun search(query: String): List<JellyseerrSearchResult>
 
-	/** Requests a movie or whole series. */
-	suspend fun request(result: JellyseerrSearchResult): Result<Unit>
+	/** Whether the server allows requesting individual seasons (vs. whole series only). */
+	suspend fun getRequestSettings(): JellyseerrRequestSettings
+
+	/** Full details (incl. seasons) for a TV show, or `null` on failure. */
+	suspend fun getTvDetails(tmdbId: Int): JellyseerrTvDetails?
+
+	/** Requests a movie. */
+	suspend fun requestMovie(tmdbId: Int): Result<Unit>
+
+	/** Requests a series. [seasons] = null requests all seasons, otherwise the given season numbers. */
+	suspend fun requestSeries(tmdbId: Int, seasons: List<Int>?): Result<Unit>
 }
 
 class JellyseerrRepositoryImpl(
@@ -69,14 +80,46 @@ class JellyseerrRepositoryImpl(
 		}
 	}
 
-	override suspend fun request(result: JellyseerrSearchResult): Result<Unit> = withContext(Dispatchers.IO) {
+	override suspend fun getRequestSettings(): JellyseerrRequestSettings = withContext(Dispatchers.IO) {
 		try {
-			val body = JellyseerrRequestBody(
-				mediaType = result.mediaType,
-				mediaId = result.id,
-				// Whole series; movies don't take a seasons field.
-				seasons = if (result.isTv) JsonPrimitive("all") else null,
+			val response = apiClient.request(
+				method = HttpMethod.GET,
+				pathTemplate = "$BASE/settings/partial-requests",
 			)
+			json.decodeFromString<JellyseerrRequestSettings>(response.body.decodeToString())
+		} catch (error: Exception) {
+			Timber.d(error, "Jellyseerr request-settings fetch failed")
+			JellyseerrRequestSettings()
+		}
+	}
+
+	override suspend fun getTvDetails(tmdbId: Int): JellyseerrTvDetails? = withContext(Dispatchers.IO) {
+		try {
+			val response = apiClient.request(
+				method = HttpMethod.GET,
+				pathTemplate = "$BASE/tv/{tmdbId}",
+				pathParameters = mapOf("tmdbId" to tmdbId),
+			)
+			json.decodeFromString<JellyseerrTvDetails>(response.body.decodeToString())
+		} catch (error: Exception) {
+			Timber.w(error, "Jellyseerr TV details fetch failed for %d", tmdbId)
+			null
+		}
+	}
+
+	override suspend fun requestMovie(tmdbId: Int): Result<Unit> =
+		submitRequest(JellyseerrRequestBody(mediaType = "movie", mediaId = tmdbId))
+
+	override suspend fun requestSeries(tmdbId: Int, seasons: List<Int>?): Result<Unit> {
+		val seasonsElement: JsonElement = when {
+			seasons == null -> JsonPrimitive("all")
+			else -> JsonArray(seasons.map { JsonPrimitive(it) })
+		}
+		return submitRequest(JellyseerrRequestBody(mediaType = "tv", mediaId = tmdbId, seasons = seasonsElement))
+	}
+
+	private suspend fun submitRequest(body: JellyseerrRequestBody): Result<Unit> = withContext(Dispatchers.IO) {
+		try {
 			apiClient.request(
 				method = HttpMethod.POST,
 				pathTemplate = "$BASE/request",
@@ -84,7 +127,7 @@ class JellyseerrRepositoryImpl(
 			)
 			Result.success(Unit)
 		} catch (error: Exception) {
-			Timber.w(error, "Jellyseerr request failed for \"%s\"", result.displayTitle)
+			Timber.w(error, "Jellyseerr request failed (%s %d)", body.mediaType, body.mediaId)
 			Result.failure(error)
 		}
 	}

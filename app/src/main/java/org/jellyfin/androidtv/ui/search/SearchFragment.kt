@@ -1,11 +1,8 @@
 package org.jellyfin.androidtv.ui.search
 
-import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -26,17 +22,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.compose.AndroidFragment
 import androidx.fragment.compose.content
 import androidx.leanback.app.RowsSupportFragment
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
-import org.jellyfin.androidtv.R
+import org.jellyfin.androidtv.ui.jellyseerr.JellyseerrRequestDialog
 import org.jellyfin.androidtv.ui.jellyseerr.JellyseerrSearchResult
 import org.jellyfin.androidtv.ui.search.composable.SearchTextInput
 import org.jellyfin.androidtv.ui.search.composable.SearchVoiceInput
@@ -65,13 +58,10 @@ class SearchFragment : Fragment() {
 		val resultFocusRequester = remember { FocusRequester() }
 		val toolbarFocusRequesters = rememberMainToolbarFocusRequesters()
 		val speechRecognizerAvailability = rememberSpeechRecognizerAvailability()
-		val context = LocalContext.current
-		val coroutineScope = rememberCoroutineScope()
+		var requestTarget by remember { mutableStateOf<JellyseerrSearchResult?>(null) }
 
 		LaunchedEffect(Unit) {
-			searchFragmentDelegate.onJellyseerrItemClicked = { result ->
-				showJellyseerrRequestDialog(context, result, viewModel, coroutineScope)
-			}
+			searchFragmentDelegate.onJellyseerrItemClicked = { result -> requestTarget = result }
 
 			val extraQuery = arguments?.getString(EXTRA_QUERY)
 			if (!extraQuery.isNullOrBlank()) {
@@ -164,33 +154,12 @@ class SearchFragment : Fragment() {
 				}
 			)
 		}
-	}
-}
 
-/**
- * Shows a confirmation dialog and, on confirm, submits a Jellyseerr request for [result] and
- * reports the outcome with a toast.
- */
-private fun showJellyseerrRequestDialog(
-	context: Context,
-	result: JellyseerrSearchResult,
-	viewModel: SearchViewModel,
-	scope: CoroutineScope,
-) {
-	AlertDialog.Builder(context)
-		.setTitle(R.string.jellyseerr_request_confirm_title)
-		.setMessage(result.displayTitle)
-		.setPositiveButton(R.string.jellyseerr_request_action) { _, _ ->
-			scope.launch {
-				val outcome = viewModel.requestMedia(result)
-				val message = if (outcome.isSuccess) {
-					context.getString(R.string.jellyseerr_request_success, result.displayTitle)
-				} else {
-					context.getString(R.string.jellyseerr_request_failed, result.displayTitle)
-				}
-				Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-			}
+		requestTarget?.let { target ->
+			JellyseerrRequestDialog(
+				result = target,
+				onDismiss = { requestTarget = null },
+			)
 		}
-		.setNegativeButton(android.R.string.cancel, null)
-		.show()
+	}
 }
