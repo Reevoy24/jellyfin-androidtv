@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -53,9 +54,35 @@ enum class MainToolbarActiveButton {
 	None,
 }
 
+class MainToolbarFocusRequesters(
+	val user: FocusRequester,
+	val home: FocusRequester,
+	val search: FocusRequester,
+	val settings: FocusRequester,
+) {
+	fun forActiveButton(activeButton: MainToolbarActiveButton) = when (activeButton) {
+		MainToolbarActiveButton.User -> user
+		MainToolbarActiveButton.Home -> home
+		MainToolbarActiveButton.Search -> search
+		MainToolbarActiveButton.None -> home
+	}
+}
+
+@Composable
+fun rememberMainToolbarFocusRequesters() = remember {
+	MainToolbarFocusRequesters(
+		user = FocusRequester(),
+		home = FocusRequester(),
+		search = FocusRequester(),
+		settings = FocusRequester(),
+	)
+}
+
 @Composable
 fun MainToolbar(
 	activeButton: MainToolbarActiveButton = MainToolbarActiveButton.None,
+	focusRequesters: MainToolbarFocusRequesters = rememberMainToolbarFocusRequesters(),
+	downFocusRequester: FocusRequester? = null,
 ) {
 	val userRepository = koinInject<UserRepository>()
 	val api = koinInject<ApiClient>()
@@ -67,6 +94,8 @@ fun MainToolbar(
 	MainToolbar(
 		userImage = userImage,
 		activeButton = activeButton,
+		focusRequesters = focusRequesters,
+		downFocusRequester = downFocusRequester,
 	)
 }
 
@@ -74,11 +103,9 @@ fun MainToolbar(
 private fun MainToolbar(
 	userImage: String? = null,
 	activeButton: MainToolbarActiveButton,
+	focusRequesters: MainToolbarFocusRequesters,
+	downFocusRequester: FocusRequester?,
 ) {
-	val userFocusRequester = remember { FocusRequester() }
-	val homeFocusRequester = remember { FocusRequester() }
-	val searchFocusRequester = remember { FocusRequester() }
-	val settingsFocusRequester = remember { FocusRequester() }
 	val navigationRepository = koinInject<NavigationRepository>()
 	val mediaManager = koinInject<MediaManager>()
 	val sessionRepository = koinInject<SessionRepository>()
@@ -88,12 +115,7 @@ private fun MainToolbar(
 		containerColor = JellyfinTheme.colorScheme.buttonActive,
 		contentColor = JellyfinTheme.colorScheme.onButtonActive,
 	)
-	val fallbackFocusRequester = when (activeButton) {
-		MainToolbarActiveButton.User -> userFocusRequester
-		MainToolbarActiveButton.Home -> homeFocusRequester
-		MainToolbarActiveButton.Search -> searchFocusRequester
-		MainToolbarActiveButton.None -> homeFocusRequester
-	}
+	val fallbackFocusRequester = focusRequesters.forActiveButton(activeButton)
 
 	Toolbar(
 		modifier = Modifier
@@ -106,7 +128,11 @@ private fun MainToolbar(
 				val userImageVisible = userImageState is AsyncImagePainter.State.Success
 
 				IconButton(
-					modifier = Modifier.focusRequester(userFocusRequester),
+					modifier = Modifier
+						.focusRequester(focusRequesters.user)
+						.focusProperties {
+							if (downFocusRequester != null) down = downFocusRequester
+						},
 					onClick = {
 						if (activeButton != MainToolbarActiveButton.User) {
 							mediaManager.clearAudioQueue()
@@ -138,7 +164,11 @@ private fun MainToolbar(
 			ToolbarButtons {
 				ProvideTextStyle(JellyfinTheme.typography.default.copy(fontWeight = FontWeight.Bold)) {
 					Button(
-						modifier = Modifier.focusRequester(homeFocusRequester),
+						modifier = Modifier
+							.focusRequester(focusRequesters.home)
+							.focusProperties {
+								if (downFocusRequester != null) down = downFocusRequester
+							},
 						onClick = {
 							if (activeButton != MainToolbarActiveButton.Home) {
 								navigationRepository.navigate(
@@ -151,7 +181,11 @@ private fun MainToolbar(
 						content = { Text(stringResource(R.string.lbl_home)) }
 					)
 					Button(
-						modifier = Modifier.focusRequester(searchFocusRequester),
+						modifier = Modifier
+							.focusRequester(focusRequesters.search)
+							.focusProperties {
+								if (downFocusRequester != null) down = downFocusRequester
+							},
 						onClick = {
 							if (activeButton != MainToolbarActiveButton.Search) {
 								navigationRepository.navigate(Destinations.search())
@@ -166,7 +200,11 @@ private fun MainToolbar(
 		end = {
 			ToolbarButtons {
 				IconButton(
-					modifier = Modifier.focusRequester(settingsFocusRequester),
+					modifier = Modifier
+						.focusRequester(focusRequesters.settings)
+						.focusProperties {
+							if (downFocusRequester != null) down = downFocusRequester
+						},
 					onClick = { settingsViewModel.show() },
 				) {
 					Icon(

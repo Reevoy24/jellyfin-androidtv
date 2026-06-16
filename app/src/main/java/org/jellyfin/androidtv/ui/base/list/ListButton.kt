@@ -1,6 +1,7 @@
 package org.jellyfin.androidtv.ui.base.list
 
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -26,13 +27,18 @@ fun ListButton(
 
 	ListControl(
 		headingContent = headingContent,
-		modifier = modifier.combinedClickable(
-			interactionSource = interactionSource,
-			indication = null,
-			enabled = enabled,
-			role = Role.Button,
-			onClick = onClick,
-		),
+		modifier = modifier
+			.focusable(
+				interactionSource = interactionSource,
+				enabled = enabled,
+			)
+			.combinedClickable(
+				interactionSource = interactionSource,
+				indication = null,
+				enabled = enabled,
+				role = Role.Button,
+				onClick = onClick,
+			),
 		enabled = enabled,
 		interactionSource = interactionSource,
 		colors = colors,

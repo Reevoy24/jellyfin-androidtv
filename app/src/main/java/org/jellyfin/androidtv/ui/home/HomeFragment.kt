@@ -31,6 +31,7 @@ import org.jellyfin.androidtv.auth.repository.SessionRepository
 import org.jellyfin.androidtv.data.repository.NotificationsRepository
 import org.jellyfin.androidtv.ui.shared.toolbar.MainToolbar
 import org.jellyfin.androidtv.ui.shared.toolbar.MainToolbarActiveButton
+import org.jellyfin.androidtv.ui.shared.toolbar.rememberMainToolbarFocusRequesters
 import org.koin.android.ext.android.inject
 
 class HomeFragment : Fragment() {
@@ -44,10 +45,15 @@ class HomeFragment : Fragment() {
 		savedInstanceState: Bundle?
 	) = content {
 		val rowsFocusRequester = remember { FocusRequester() }
+		val toolbarFocusRequesters = rememberMainToolbarFocusRequesters()
 		LaunchedEffect(rowsFocusRequester) { rowsFocusRequester.requestFocus() }
 
 		Column {
-			MainToolbar(MainToolbarActiveButton.Home)
+			MainToolbar(
+				activeButton = MainToolbarActiveButton.Home,
+				focusRequesters = toolbarFocusRequesters,
+				downFocusRequester = rowsFocusRequester,
+			)
 
 			// The leanback code has its own awful focus handling that doesn't work properly with Compose view inteop to workaround this
 			// issue we add custom behavior that only allows focus exit when the current selected row is the first one. Additionally when
@@ -65,6 +71,8 @@ class HomeFragment : Fragment() {
 							} else {
 								rowsSupportFragment?.selectedPosition = 0
 								rowsSupportFragment?.verticalGridView?.clearFocus()
+								cancelFocusChange()
+								toolbarFocusRequesters.forActiveButton(MainToolbarActiveButton.Home).requestFocus()
 							}
 						}
 					}
