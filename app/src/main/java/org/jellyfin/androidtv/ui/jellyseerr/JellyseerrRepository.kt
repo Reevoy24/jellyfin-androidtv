@@ -29,11 +29,17 @@ interface JellyseerrRepository {
 	/** Full details (incl. seasons) for a TV show, or `null` on failure. */
 	suspend fun getTvDetails(tmdbId: Int): JellyseerrTvDetails?
 
+	/** Radarr (movie) / Sonarr (series) instances for advanced requests; empty if unavailable. */
+	suspend fun getServers(isMovie: Boolean): List<JellyseerrServer>
+
+	/** Quality profiles + root folders for a given server, or `null` on failure. */
+	suspend fun getServerDetails(isMovie: Boolean, serverId: Int): JellyseerrServerDetails?
+
 	/** Requests a movie. */
-	suspend fun requestMovie(tmdbId: Int): Result<Unit>
+	suspend fun requestMovie(tmdbId: Int, options: JellyseerrAdvancedOptions?): Result<Unit>
 
 	/** Requests a series. [seasons] = null requests all seasons, otherwise the given season numbers. */
-	suspend fun requestSeries(tmdbId: Int, seasons: List<Int>?): Result<Unit>
+	suspend fun requestSeries(tmdbId: Int, seasons: List<Int>?, options: JellyseerrAdvancedOptions?): Result<Unit>
 }
 
 class JellyseerrRepositoryImpl(
@@ -107,16 +113,57 @@ class JellyseerrRepositoryImpl(
 		}
 	}
 
-	override suspend fun requestMovie(tmdbId: Int): Result<Unit> =
-		submitRequest(JellyseerrRequestBody(mediaType = "movie", mediaId = tmdbId))
+	override suspend fun getServers(isMovie: Boolean): List<JellyseerrServer> = withContext(Dispatchers.IO) {
+		try {
+			val response = apiClient.request(
+				method = HttpMethod.GET,
+				pathTemplate = "$BASE/${if (isMovie) "radarr" else "sonarr"}",
+			)
+			json.decodeFromString<List<JellyseerrServer>>(response.body.decodeToString())
+		} catch (error: Exception) {
+			Timber.d(error, "Jellyseerr server list fetch failed")
+			emptyList()
+		}
+	}
 
-	override suspend fun requestSeries(tmdbId: Int, seasons: List<Int>?): Result<Unit> {
+	override suspend fun getServerDetails(isMovie: Boolean, serverId: Int): JellyseerrServerDetails? = withContext(Dispatchers.IO) {
+		try {
+			val response = apiClient.request(
+				method = HttpMethod.GET,
+				pathTemplate = "$BASE/{type}/{serverId}",
+				pathParameters = mapOf("type" to if (isMovie) "radarr" else "sonarr", "serverId" to serverId),
+			)
+			json.decodeFromString<JellyseerrServerDetails>(response.body.decodeToString())
+		} catch (error: Exception) {
+			Timber.d(error, "Jellyseerr server details fetch failed for %d", serverId)
+			null
+		}
+	}
+
+	override suspend fun requestMovie(tmdbId: Int, options: JellyseerrAdvancedOptions?): Result<Unit> =
+		submitRequest(buildBody("movie", tmdbId, seasons = null, options = options))
+
+	override suspend fun requestSeries(tmdbId: Int, seasons: List<Int>?, options: JellyseerrAdvancedOptions?): Result<Unit> {
 		val seasonsElement: JsonElement = when {
 			seasons == null -> JsonPrimitive("all")
 			else -> JsonArray(seasons.map { JsonPrimitive(it) })
 		}
-		return submitRequest(JellyseerrRequestBody(mediaType = "tv", mediaId = tmdbId, seasons = seasonsElement))
+		return submitRequest(buildBody("tv", tmdbId, seasons = seasonsElement, options = options))
 	}
+
+	private fun buildBody(
+		mediaType: String,
+		tmdbId: Int,
+		seasons: JsonElement?,
+		options: JellyseerrAdvancedOptions?,
+	) = JellyseerrRequestBody(
+		mediaType = mediaType,
+		mediaId = tmdbId,
+		seasons = seasons,
+		serverId = options?.serverId,
+		profileId = options?.profileId,
+		rootFolder = options?.rootFolder,
+	)
 
 	private suspend fun submitRequest(body: JellyseerrRequestBody): Result<Unit> = withContext(Dispatchers.IO) {
 		try {

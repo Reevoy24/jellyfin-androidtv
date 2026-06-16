@@ -45,6 +45,12 @@
     <string name="jellyseerr_dialog_already_requested">Already requested.</string>
     <string name="jellyseerr_dialog_request_movie_hint">Request this movie via Jellyseerr.</string>
     <string name="jellyseerr_dialog_request_series_hint">Request this series via Jellyseerr.</string>
+    <string name="jellyseerr_dialog_advanced">Advanced options</string>
+    <string name="jellyseerr_dialog_server">Target server</string>
+    <string name="jellyseerr_dialog_quality">Quality profile</string>
+    <string name="jellyseerr_dialog_folder">Root folder</string>
+    <string name="jellyseerr_dialog_select_quality">Select quality…</string>
+    <string name="jellyseerr_dialog_select_folder">Select folder…</string>
 
     <string name="lbl_search">Search</string>
     <string name="msg_not_implemented">" not implemented"</string>

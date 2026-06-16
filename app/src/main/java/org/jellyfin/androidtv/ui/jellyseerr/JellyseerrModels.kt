@@ -105,6 +105,47 @@ data class JellyseerrRequestBody(
 	val mediaId: Int,
 	/** "all" for a whole series, or an array of season numbers. Omitted for movies. */
 	val seasons: JsonElement? = null,
+	/** Advanced options — when null, Jellyseerr falls back to its defaults. */
+	val serverId: Int? = null,
+	val profileId: Int? = null,
+	val rootFolder: String? = null,
+)
+
+/** A Radarr/Sonarr instance from `GET /JellyfinEnhanced/jellyseerr/{radarr|sonarr}`. */
+@Serializable
+data class JellyseerrServer(
+	val id: Int = 0,
+	val name: String? = null,
+	val isDefault: Boolean = false,
+	val activeProfileId: Int? = null,
+	val activeDirectory: String? = null,
+) {
+	val displayName: String get() = name?.takeIf { it.isNotBlank() } ?: "Server $id"
+}
+
+/** Details of a single server from `GET /JellyfinEnhanced/jellyseerr/{radarr|sonarr}/{serverId}`. */
+@Serializable
+data class JellyseerrServerDetails(
+	val profiles: List<JellyseerrQualityProfile> = emptyList(),
+	val rootFolders: List<JellyseerrRootFolder> = emptyList(),
+)
+
+@Serializable
+data class JellyseerrQualityProfile(
+	val id: Int = 0,
+	val name: String = "",
+)
+
+@Serializable
+data class JellyseerrRootFolder(
+	val path: String = "",
+)
+
+/** User-chosen advanced request settings (target server / quality profile / root folder). */
+data class JellyseerrAdvancedOptions(
+	val serverId: Int? = null,
+	val profileId: Int? = null,
+	val rootFolder: String? = null,
 )
 
 /** Response of `GET /JellyfinEnhanced/jellyseerr/settings/partial-requests`. */
