@@ -10,12 +10,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.jellyfin.androidtv.R
+import org.jellyfin.androidtv.ui.jellyseerr.JellyseerrRepository
+import org.jellyfin.androidtv.ui.jellyseerr.JellyseerrSearchResult
 import org.jellyfin.sdk.model.api.BaseItemKind
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 class SearchViewModel(
-	private val searchRepository: SearchRepository
+	private val searchRepository: SearchRepository,
+	private val jellyseerrRepository: JellyseerrRepository,
 ) : ViewModel() {
 	companion object {
 		private val debounceDuration = 600.milliseconds
@@ -39,11 +42,18 @@ class SearchViewModel(
 	}
 
 	private var searchJob: Job? = null
+	private var jellyseerrJob: Job? = null
 
 	private var previousQuery: String? = null
 
+	// Cached availability of the Jellyseerr integration for this session (null = not checked yet).
+	private var jellyseerrAvailable: Boolean? = null
+
 	private val _searchResultsFlow = MutableStateFlow<Collection<SearchResultGroup>>(emptyList())
 	val searchResultsFlow = _searchResultsFlow.asStateFlow()
+
+	private val _jellyseerrResultsFlow = MutableStateFlow<List<JellyseerrSearchResult>>(emptyList())
+	val jellyseerrResultsFlow = _jellyseerrResultsFlow.asStateFlow()
 
 	fun searchImmediately(query: String) = searchDebounced(query, 0.milliseconds)
 
@@ -53,9 +63,11 @@ class SearchViewModel(
 		previousQuery = trimmed
 
 		searchJob?.cancel()
+		jellyseerrJob?.cancel()
 
 		if (trimmed.isBlank()) {
 			_searchResultsFlow.value = emptyList()
+			_jellyseerrResultsFlow.value = emptyList()
 			return true
 		}
 
@@ -72,6 +84,23 @@ class SearchViewModel(
 			}.awaitAll()
 		}
 
+		jellyseerrJob = viewModelScope.launch {
+			delay(debounce)
+			_jellyseerrResultsFlow.value = searchJellyseerr(trimmed)
+		}
+
 		return true
 	}
+
+	private suspend fun searchJellyseerr(query: String): List<JellyseerrSearchResult> {
+		if (jellyseerrAvailable == null) {
+			jellyseerrAvailable = jellyseerrRepository.getUserStatus()?.available == true
+		}
+		if (jellyseerrAvailable != true) return emptyList()
+
+		return jellyseerrRepository.search(query)
+	}
+
+	suspend fun requestMedia(result: JellyseerrSearchResult): Result<Unit> =
+		jellyseerrRepository.request(result)
 }

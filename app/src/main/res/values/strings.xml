@@ -24,6 +24,16 @@
     <string name="lbl_status">%1$s / %2$s</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_all_genres">All genres</string>
+
+    <!-- Jellyseerr (request via Jellyfin-Enhanced plugin) -->
+    <string name="jellyseerr_request_row">Available to request</string>
+    <string name="jellyseerr_request_confirm_title">Request media?</string>
+    <string name="jellyseerr_request_action">Request</string>
+    <string name="jellyseerr_request_success">Requested \"%1$s\"</string>
+    <string name="jellyseerr_request_failed">Couldn\'t request \"%1$s\"</string>
+    <string name="jellyseerr_status_available">Available</string>
+    <string name="jellyseerr_status_requested">Requested</string>
+
     <string name="lbl_search">Search</string>
     <string name="msg_not_implemented">" not implemented"</string>
     <string name="lbl_latest">Recently added</string>
