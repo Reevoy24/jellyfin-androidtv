@@ -582,7 +582,6 @@
     <string name="indicator_subtitles_hearing_impaired">SDH</string>
     <string name="fast_forward">Rychlý posun vpřed</string>
     <string name="rewind">Rychlý posun zpět</string>
-    <string name="preference_enable_libass">Povolit vykreslování titulků Advanced SubStation Alpha na straně klienta</string>
     <string name="preference_enable_pgs">Přímo přehrávat titulky PGS</string>
     <string name="speech_error_unknown">Během rozpoznávání řeči došlo k neočekávané chybě.</string>
     <string name="pref_subtitles_bold">Tučný text</string>
@@ -651,4 +650,29 @@
     <string name="sdr">SDR</string>
     <string name="hdr10">HDR10</string>
     <string name="hlg">HLG</string>
+    <string name="pref_burn_subtitles_when_transcoding">Vypálit titulky během překódování</string>
+    <string name="pref_burn_subtitles_when_transcoding_description">Vždy vypálit titulky do videa během překódování. Tímto můžete opravit problémy se synchronizací titulků, zakáže se tím ale jejich přizpůsobení.</string>
+    <string name="playback_buffer_length">Velikost mezipaměti přehrávače</string>
+    <string name="playback_buffer_auto">Automatická</string>
+    <string name="playback_buffer_large">Velká</string>
+    <string name="playback_buffer_extra_large">Extra velká</string>
+    <string name="playback_info">Informace o přehrávání</string>
+    <string name="playback_info_play_method">Způsob přehrávání: %1$s</string>
+    <string name="playback_info_direct_play">Přímé přehrání</string>
+    <string name="playback_info_direct_stream">Přímý stream</string>
+    <string name="playback_info_transcoding">Překódování</string>
+    <string name="playback_info_container">Kontejner: %1$s</string>
+    <string name="playback_info_video_title">Video</string>
+    <string name="playback_info_audio_title">Zvuk</string>
+    <string name="playback_info_codec">Kodek: %1$s</string>
+    <string name="playback_info_resolution">Rozlišení: %1$dx%2$d</string>
+    <string name="playback_info_bitrate">Datový tok: %1$s</string>
+    <string name="playback_info_channels">Kanály: %1$d</string>
+    <string name="playback_info_video_range">Rozsah videa: %1$s</string>
+    <string name="playback_info_transcoding_note">Server provádí překódování tohoto souboru</string>
+    <string name="pref_software_codecs_enabled">Použít softwarové kodeky</string>
+    <string name="pref_software_codecs_enabled_description">Některé softwarové implementace mohou snižovat výkon. Zakázání této možnosti zvýší pravděpodobnost překódování.</string>
+    <string name="preference_enable_ass">Přímo přehrávat titulky ASS</string>
+    <string name="preference_enable_pgs_description">Při zakázání vyžaduje překódování</string>
+    <string name="preference_enable_ass_description">Experimentální funkce, nemusí fungovat spolehlivě</string>
 </resources>

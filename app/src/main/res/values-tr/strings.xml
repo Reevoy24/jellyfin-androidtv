@@ -569,7 +569,6 @@
     <string name="runtime_minutes">%1$dd</string>
     <string name="pref_report_device_profile_summary">Oynatma kapasiteleri hakkında bilgileri içeren bir sorun giderme belgesini Jellyfin sunucusuna yükle</string>
     <string name="pref_report_device_profile_failure">Belge gönderilemedi. Jellyfin sunucunuz istemci günlüklerine izin vermiyor olabilir.</string>
-    <string name="preference_enable_libass">Gelişmiş SubStation Alpha altyazı istemcisi işleme özelliğini etkinleştir</string>
     <string name="fast_forward">İleriye sar</string>
     <string name="rewind">Geri sar</string>
     <string name="indicator_subtitles_hearing_impaired">İşitme engelliler için altyazı</string>
@@ -641,4 +640,24 @@
     <string name="hdr10">HDR10</string>
     <string name="hlg">HLG</string>
     <string name="dolby_vision_with_el">Dolby Vision (EL ile)</string>
+    <string name="pref_burn_subtitles_when_transcoding">Kod dönüştürme sırasında altyazıları videoya yaz</string>
+    <string name="pref_burn_subtitles_when_transcoding_description">Kod dönüştürme sırasında altyazıları her zaman videoya yaz. Bu, altyazı senkronizasyon sorunlarını çözebilir ancak altyazı özelleştirme özelliğini devre dışı bırakır.</string>
+    <string name="playback_buffer_length">Oynatma arabellek boyutu</string>
+    <string name="playback_buffer_auto">Otomatik</string>
+    <string name="playback_buffer_large">Büyük</string>
+    <string name="playback_buffer_extra_large">Çok büyük</string>
+    <string name="playback_info">Oynatma bilgisi</string>
+    <string name="playback_info_play_method">Oynatma yöntemi: %1$s</string>
+    <string name="playback_info_direct_play">Doğrudan oynatma</string>
+    <string name="playback_info_direct_stream">Doğrudan akış</string>
+    <string name="playback_info_transcoding">Dönüştürülüyor</string>
+    <string name="playback_info_container">Kapsayıcı: %1$s</string>
+    <string name="playback_info_video_title">Video</string>
+    <string name="playback_info_audio_title">Ses</string>
+    <string name="playback_info_codec">Codec: %1$s</string>
+    <string name="playback_info_resolution">Çözünürlük: %1$dx%2$d</string>
+    <string name="playback_info_bitrate">Bit hızı: %1$s</string>
+    <string name="playback_info_channels">Kanal sayısı: %1$d</string>
+    <string name="playback_info_video_range">Video aralığı: %1$s</string>
+    <string name="playback_info_transcoding_note">Sunucu bu dosyayı dönüştürüyor</string>
 </resources>

@@ -107,6 +107,16 @@ fun SettingsPlaybackAdvancedScreen() {
 			}
 		}
 
+		item {
+			var bufferLength by rememberPreference(userPreferences, UserPreferences.bufferLength)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.playback_buffer_length)) },
+				captionContent = { Text(stringResource(bufferLength.nameRes)) },
+				onClick = { router.push(Routes.PLAYBACK_BUFFER_LENGTH) },
+			)
+		}
+
 		item { ListSection(headingContent = { Text(stringResource(R.string.pref_video)) }) }
 
 		item {
@@ -178,20 +188,45 @@ fun SettingsPlaybackAdvancedScreen() {
 		}
 
 		item {
+			ListButton(
+				headingContent = { Text(stringResource(R.string.preference_codecs)) },
+				captionContent = { Text(stringResource(R.string.preference_codecs_summary)) },
+				onClick = { router.push(Routes.PLAYBACK_CODEC) }
+			)
+		}
+
+		item { ListSection(headingContent = { Text(stringResource(R.string.pref_subtitles)) }) }
+
+		item {
 			var pgsDirectPlay by rememberPreference(userPreferences, UserPreferences.pgsDirectPlay)
 
 			ListButton(
 				headingContent = { Text(stringResource(R.string.preference_enable_pgs)) },
+				captionContent = { Text(stringResource(R.string.preference_enable_pgs_description)) },
 				trailingContent = { Checkbox(checked = pgsDirectPlay) },
 				onClick = { pgsDirectPlay = !pgsDirectPlay }
 			)
 		}
 
 		item {
+			var assDirectPlay by rememberPreference(userPreferences, UserPreferences.assDirectPlay)
+
 			ListButton(
-				headingContent = { Text(stringResource(R.string.preference_codecs)) },
-				captionContent = { Text(stringResource(R.string.preference_codecs_summary)) },
-				onClick = { router.push(Routes.PLAYBACK_CODEC) }
+				headingContent = { Text(stringResource(R.string.preference_enable_ass)) },
+				captionContent = { Text(stringResource(R.string.preference_enable_ass_description)) },
+				trailingContent = { Checkbox(checked = assDirectPlay) },
+				onClick = { assDirectPlay = !assDirectPlay }
+			)
+		}
+
+		item {
+			var subtitlesBurnDuringTranscode by rememberPreference(userPreferences, UserPreferences.subtitlesBurnDuringTranscode)
+
+			ListButton(
+				headingContent = { Text(stringResource(R.string.pref_burn_subtitles_when_transcoding)) },
+				captionContent = { Text(stringResource(R.string.pref_burn_subtitles_when_transcoding_description)) },
+				trailingContent = { Checkbox(checked = subtitlesBurnDuringTranscode) },
+				onClick = { subtitlesBurnDuringTranscode = !subtitlesBurnDuringTranscode }
 			)
 		}
 
@@ -223,7 +258,7 @@ fun SettingsPlaybackAdvancedScreen() {
 			var audioNightMode by rememberPreference(userPreferences, UserPreferences.audioNightMode)
 
 			ListButton(
-				headingContent = { Text(stringResource(R.string.lbl_direct_stream_live)) },
+				headingContent = { Text(stringResource(R.string.pref_audio_night_mode)) },
 				trailingContent = { Checkbox(checked = audioNightMode) },
 				onClick = { audioNightMode = !audioNightMode }
 			)
@@ -236,6 +271,16 @@ fun SettingsPlaybackAdvancedScreen() {
 				headingContent = { Text(stringResource(R.string.lbl_bitstream_ac3)) },
 				trailingContent = { Checkbox(checked = ac3Enabled) },
 				onClick = { ac3Enabled = !ac3Enabled }
+			)
+		}
+
+		item {
+			var preferExoPlayerFfmpeg by rememberPreference(userPreferences, UserPreferences.preferExoPlayerFfmpeg)
+			ListButton(
+				headingContent = { Text(stringResource(R.string.prefer_exoplayer_ffmpeg)) },
+				trailingContent = { Checkbox(checked = preferExoPlayerFfmpeg) },
+				captionContent = { Text(stringResource(R.string.prefer_exoplayer_ffmpeg_content)) },
+				onClick = { preferExoPlayerFfmpeg = !preferExoPlayerFfmpeg }
 			)
 		}
 

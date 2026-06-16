@@ -8,8 +8,8 @@
     <string name="settings_title">Voorkeuren</string>
     <string name="chapters">Hoofdstukken</string>
     <string name="lbl_settings">Voorkeuren</string>
-    <string name="lbl_continue_watching">Verder kijken</string>
-    <string name="lbl_next_up">Volgende kijken</string>
+    <string name="lbl_continue_watching">Verderkijken</string>
+    <string name="lbl_next_up">Volgende</string>
     <string name="lbl_on_now">Nu bezig</string>
     <string name="lbl_views">Weergaven</string>
     <string name="lbl_by_letter">Op alfabet</string>
@@ -105,7 +105,7 @@
     <string name="pref_audio_direct">Direct</string>
     <string name="pref_audio_compat">Downmixen naar stereo</string>
     <string name="lbl_audio_output">Geluidsuitgang</string>
-    <string name="lbl_goto_series">Naar serie gaan</string>
+    <string name="lbl_goto_series">Naar serie</string>
     <string name="lbl_enable_debug">Opties voor foutopsporing</string>
     <string name="desc_debug">Toon extra informatie voor foutopsporing</string>
     <string name="lbl_showing">Toont</string>
@@ -151,7 +151,7 @@
     <string name="lbl_play_from_here">Vanaf hier afspelen</string>
     <string name="lbl_remove_from_queue">Verwijderen uit wachtrij</string>
     <string name="lbl_goto_now_playing">Naar nu afspelen gaan</string>
-    <string name="lbl_instant_mix">Instant mix</string>
+    <string name="lbl_instant_mix">Snelmix</string>
     <string name="lbl_delete">Verwijderen</string>
     <string name="msg_item_added">" item toegevoegd"</string>
     <string name="desc_automatic_fav_songs">Automatische afspeellijst van favoriete nummers</string>
@@ -223,7 +223,7 @@
     <string name="pref_next_up_timeout_summary">Hoe lang te wachten voordat het volgende item wordt afgespeeld</string>
     <string name="pref_about_title">Over</string>
     <string name="pref_app_theme">App-thema</string>
-    <string name="pref_next_up_timeout_title">Tijdsduur timer \'als volgende\'</string>
+    <string name="pref_next_up_timeout_title">Tijdsduur timer \'Volgende\'</string>
     <string name="pref_theme_emerald">Klassiek smaragd</string>
     <string name="pref_theme_dark">Donker (standaard)</string>
     <string name="grid_direction_vertical">Verticaal</string>
@@ -300,7 +300,7 @@
     <string name="pref_developer_link_description">Geavanceerde en experimentele functies</string>
     <string name="user_picker_last_user_summary">Gebruik het laatst actieve account</string>
     <string name="user_picker_last_user_title">Meest recent gebruikt</string>
-    <string name="user_picker_disable_summary">Aanmeldscherm altijd tonen</string>
+    <string name="user_picker_disable_summary">Altijd het aanmeldscherm tonen</string>
     <string name="user_picker_disable_title">Uitschakelen</string>
     <string name="auto_sign_in">Automatisch aanmelden</string>
     <string name="lbl_use_series_thumbnails_description">Serieminiatuur gebruiken bij weergeven van afleveringen</string>
@@ -372,12 +372,12 @@
     <string name="pref_next_up_timeout_disabled">∞</string>
     <string name="pref_subtitles_size">Lettergrootte</string>
     <string name="pref_subtitles_background_summary">Toon de ondertiteling met een zwarte achtergrond</string>
-    <string name="home_section_next_up">Als volgende</string>
+    <string name="home_section_next_up">Volgende</string>
     <string name="home_section_library_small">Mijn media (klein)</string>
     <string name="licenses_link_description">Bekijk de licenties van de bibliotheken die door de Jellyfin-app worden gebruikt</string>
     <string name="server_issue_unsupported_version">Server gebruikt niet-ondersteunde versie %1$s</string>
     <string name="lbl_playback_speed">Afspeelsnelheid</string>
-    <string name="pref_playback_description">Beeld, ondertiteling, live-tv, als volgende</string>
+    <string name="pref_playback_description">Beeld, ondertiteling, live-tv, volgende</string>
     <string name="pref_customization_description">Thema, startscherm, knoppen</string>
     <string name="server_issue_ssl_handshake">SSL-handshake mislukt</string>
     <string name="server_issue_timeout">Verbindingstime-out</string>
@@ -538,7 +538,7 @@
     <string name="app_notification_update_soon">Je zult je server moeten bijwerken van %1$s naar ten minste %2$s om de app te kunnen blijven gebruiken na de volgende update.</string>
     <string name="current_queue">Huidige wachtrij</string>
     <string name="pref_external_player">Externe speler gebruiken</string>
-    <string name="continue_listening">Verder luisteren</string>
+    <string name="continue_listening">Verderluisteren</string>
     <string name="past_24_hours">Afgelopen 24 uur</string>
     <string name="past_week">Afgelopen week</string>
     <string name="scheduled_in_next_24_hours">Komende 24 uur ingepland</string>
@@ -572,7 +572,6 @@
     <string name="indicator_subtitles_hearing_impaired">ODS</string>
     <string name="rewind">Terugspoelen</string>
     <string name="fast_forward">Vooruitspoelen</string>
-    <string name="preference_enable_libass">Client-rendering van Advanced SubStation Alpha-ondertiteling inschakelen</string>
     <string name="lbl_from_beginning">Vanaf begin afspelen</string>
     <string name="speech_error_unknown">Er is een onverwachte fout opgetreden bij de spraakherkenning.</string>
     <string name="speech_error_no_permission">Geen toestemming om de microfoon te gebruiken. Schakel deze in via de systeeminstellingen.</string>
@@ -598,7 +597,7 @@
     <string name="pref_playback_media_segments">Mediasegmenten</string>
     <string name="pref_playback_prerolls">Voorfilmpjes</string>
     <string name="pref_playback_inactivity_prompt">Melding bij inactiviteit</string>
-    <string name="pref_playback_next_up">Als volgende</string>
+    <string name="pref_playback_next_up">Volgende</string>
     <string name="color_alpha">Transparantie</string>
     <string name="color_presets">Voorinstellingen</string>
     <string name="color_custom">Kleur aanpassen</string>
@@ -641,4 +640,29 @@
     <string name="preference_codecs_summary">De door het apparaat gemelde codec-ondersteuning overschrijven</string>
     <string name="codec_level_manual">Handmatig overschrijven</string>
     <string name="codec_level_warning">Een andere waarde dan \"automatisch\" kan afspeelproblemen veroorzaken als je apparaat het geselecteerde niveau niet daadwerkelijk ondersteunt.</string>
+    <string name="pref_burn_subtitles_when_transcoding">Ondertiteling inbranden bij transcoderen</string>
+    <string name="playback_buffer_auto">Automatisch</string>
+    <string name="playback_buffer_large">Groot</string>
+    <string name="playback_buffer_extra_large">Extra groot</string>
+    <string name="playback_buffer_length">Afspeelbuffergrootte</string>
+    <string name="pref_burn_subtitles_when_transcoding_description">Ondertiteling altijd inbranden in de video tijdens het transcoderen. Dit kan synchronisatieproblemen oplossen, maar maakt het aanpassen van ondertiteling onmogelijk.</string>
+    <string name="playback_info">Afspeelinformatie</string>
+    <string name="playback_info_play_method">Afspeelmethode: %1$s</string>
+    <string name="playback_info_direct_play">Direct afspelen</string>
+    <string name="playback_info_direct_stream">Direct streamen</string>
+    <string name="playback_info_transcoding">Transcoderen</string>
+    <string name="playback_info_container">Container: %1$s</string>
+    <string name="playback_info_video_title">Beeld</string>
+    <string name="playback_info_audio_title">Geluid</string>
+    <string name="playback_info_codec">Codec: %1$s</string>
+    <string name="playback_info_resolution">Resolutie: %1$dx%2$d</string>
+    <string name="playback_info_bitrate">Bitsnelheid: %1$s</string>
+    <string name="playback_info_channels">Kanalen: %1$d</string>
+    <string name="playback_info_video_range">Beeldbereik: %1$s</string>
+    <string name="playback_info_transcoding_note">Server transcodeert dit bestand</string>
+    <string name="pref_software_codecs_enabled">Software-codecs gebruiken</string>
+    <string name="pref_software_codecs_enabled_description">Sommige softwarematige implementaties kunnen de prestaties verminderen. Het uitschakelen van deze optie vergroot de kans dat media moet worden getranscodeerd.</string>
+    <string name="preference_enable_ass">ASS-ondertiteling direct afspelen</string>
+    <string name="preference_enable_pgs_description">Vereist transcoderen indien uitgeschakeld</string>
+    <string name="preference_enable_ass_description">Experimentele functie, mogelijk onbetrouwbaar</string>
 </resources>

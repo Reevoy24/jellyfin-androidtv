@@ -184,6 +184,20 @@
     <string name="desc_bitstream_ac3">Requires capable hardware</string>
     <string name="desc_audio_night_mode">Levels out audio volume automatically</string>
     <string name="lbl_zoom">Zoom</string>
+    <string name="playback_info">Playback info</string>
+    <string name="playback_info_play_method">Play method: %1$s</string>
+    <string name="playback_info_direct_play">Directplay</string>
+    <string name="playback_info_direct_stream">Directstream</string>
+    <string name="playback_info_transcoding">Transcoding</string>
+    <string name="playback_info_container">Container: %1$s</string>
+    <string name="playback_info_video_title">Video</string>
+    <string name="playback_info_audio_title">Audio</string>
+    <string name="playback_info_codec">Codec: %1$s</string>
+    <string name="playback_info_resolution">Resolution: %1$dx%2$d</string>
+    <string name="playback_info_bitrate">Bitrate: %1$s</string>
+    <string name="playback_info_channels">Channels: %1$d</string>
+    <string name="playback_info_video_range">Video range: %1$s</string>
+    <string name="playback_info_transcoding_note">Server is transcoding this file</string>
     <string name="lbl_auto_crop">Auto crop</string>
     <string name="lbl_stretch">Stretch</string>
     <string name="lbl_fit">Normal</string>
@@ -521,6 +535,10 @@
     <string name="prefer_exoplayer_ffmpeg_content">Use FFmpeg to decode audio, even if platform codecs are available.</string>
     <string name="default_video_zoom">Default zoom mode</string>
     <string name="video_start_delay">Video start delay</string>
+    <string name="playback_buffer_length">Playback buffer size</string>
+    <string name="playback_buffer_auto">Auto</string>
+    <string name="playback_buffer_large">Large</string>
+    <string name="playback_buffer_extra_large">Extra large</string>
     <string name="pref_mediasegment_actions">Media segment actions</string>
     <string name="segment_action_ask_to_skip">Ask to skip</string>
     <string name="segment_action_nothing">Do nothing</string>
@@ -541,8 +559,9 @@
     <string name="pref_report_device_profile_failure">Failed to submit document. Your Jellyfin server may prohibit client logs.</string>
     <string name="fast_forward">Fast forward</string>
     <string name="rewind">Rewind</string>
-    <string name="preference_enable_libass">Enable Advanced SubStation Alpha subtitle client rendering</string>
     <string name="preference_enable_pgs">Direct play PGS subtitles</string>
+    <string name="pref_burn_subtitles_when_transcoding">Burn in subtitles when transcoding</string>
+    <string name="pref_burn_subtitles_when_transcoding_description">Always burn subtitles into the video during transcoding. This can fix subtitle sync issues but disables subtitle customization.</string>
     <string name="speech_error_no_permission">No permission to use the microphone. Please enable it in system settings.</string>
     <string name="speech_error_unavailable">Speech recognition is unavailable on your device.</string>
     <string name="speech_error_unknown">An unexpected error occurred during speech recognition.</string>
@@ -595,6 +614,9 @@
     <string name="codec_level_4_2">Level 4.2</string>
     <string name="codec_level_4_1">Level 4.1</string>
     <string name="codec_level_4_0">Level 4.0</string>
+    <string name="preference_enable_ass">Direct play ASS subtitles</string>
+    <string name="preference_enable_pgs_description">Requires transcoding when disabled</string>
+    <string name="preference_enable_ass_description">Experimental feature, may not work reliably</string>
     <string name="auto">Auto</string>
     <plurals name="seconds">
         <item quantity="one">%1$s second</item>
@@ -641,4 +663,6 @@
     <string name="sdr">SDR</string>
     <string name="hdr10">HDR10</string>
     <string name="hlg">HLG</string>
+    <string name="pref_software_codecs_enabled">Use software codecs</string>
+    <string name="pref_software_codecs_enabled_description">Some software-based implementations may degrade performance. Disabling this option makes transcoding more likely.</string>
 </resources>

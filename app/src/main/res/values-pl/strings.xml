@@ -592,7 +592,6 @@
     <string name="indicator_subtitles_hearing_impaired">SDH</string>
     <string name="rewind">Przewiń do tyłu</string>
     <string name="fast_forward">Przewiń do przodu</string>
-    <string name="preference_enable_libass">Włącz renderowanie napisów klienta Advanced SubStation Alpha</string>
     <string name="speech_error_no_permission">Brak uprawnień do korzystania z mikrofonu. Włącz je w ustawieniach systemu.</string>
     <string name="speech_error_unknown">Wystąpił nieoczekiwany błąd podczas rozpoznawania mowy.</string>
     <string name="lbl_from_beginning">Odtwórz od początku</string>
@@ -661,4 +660,29 @@
     <string name="sdr">SDR</string>
     <string name="hdr10">HDR10</string>
     <string name="hlg">HLG</string>
+    <string name="pref_burn_subtitles_when_transcoding">Wypal napisy podczas transkodowania</string>
+    <string name="pref_burn_subtitles_when_transcoding_description">Zawsze wypalaj napisy na filmie podczas transkodowania. Może to rozwiązać problemy z synchronizacją napisów, ale wyłącza możliwość ich personalizacji.</string>
+    <string name="playback_buffer_length">Rozmiar bufora odtwarzania</string>
+    <string name="playback_buffer_auto">Automatyczny</string>
+    <string name="playback_buffer_large">Duży</string>
+    <string name="playback_buffer_extra_large">Bardzo duży</string>
+    <string name="playback_info">Informacje o odtwarzaniu</string>
+    <string name="playback_info_play_method">Metoda odtwarzania: %1$s</string>
+    <string name="playback_info_direct_play">Odtwarzanie bezpośrednie</string>
+    <string name="playback_info_direct_stream">Strumień bezpośredni</string>
+    <string name="playback_info_transcoding">Transkodowanie</string>
+    <string name="playback_info_container">Kontener: %1$s</string>
+    <string name="playback_info_video_title">Wideo</string>
+    <string name="playback_info_audio_title">Audio</string>
+    <string name="playback_info_codec">Kodek: %1$s</string>
+    <string name="playback_info_resolution">Rozdzielczość: %1$dx%2$d</string>
+    <string name="playback_info_bitrate">Przepływność: %1$s</string>
+    <string name="playback_info_channels">Kanały: %1$d</string>
+    <string name="playback_info_video_range">Zakres wideo: %1$s</string>
+    <string name="playback_info_transcoding_note">Serwer transkoduje ten plik</string>
+    <string name="pref_software_codecs_enabled">Użyj kodeków programowych</string>
+    <string name="pref_software_codecs_enabled_description">Niektóre implementacje programowe mogą obniżać wydajność. Wyłączenie tej opcji zwiększa prawdopodobieństwo transkodowania.</string>
+    <string name="preference_enable_ass">Bezpośrednie odtwarzanie napisów ASS</string>
+    <string name="preference_enable_pgs_description">Wymaga transkodowania po wyłączeniu</string>
+    <string name="preference_enable_ass_description">Funkcja eksperymentalna, może nie działać niezawodnie</string>
 </resources>

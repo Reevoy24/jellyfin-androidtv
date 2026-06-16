@@ -7,6 +7,7 @@ import org.jellyfin.androidtv.preference.constant.AVCLevel
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
 import org.jellyfin.androidtv.preference.constant.BackdropBehavior
+import org.jellyfin.androidtv.preference.constant.BufferLength
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
 import org.jellyfin.androidtv.preference.constant.HEVCLevel
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
@@ -114,6 +115,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * User defined HEVC level override. AUTO uses device-reported capabilities.
 		 */
 		var userHEVCLevel = enumPreference("user_hevc_level", HEVCLevel.AUTO)
+
+		/**
+		 * Playback buffer size preset.
+		 */
+		var bufferLength = enumPreference("buffer_length", BufferLength.AUTO)
 
 		/* Playback - Audio related */
 		/**
@@ -235,19 +241,24 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var playerZoomMode = enumPreference("player_zoom_mode", ZoomMode.FIT)
 
 		/**
-		 * Enable TrickPlay in legacy player user interface while seeking.
-		 */
-		var trickPlayEnabled = booleanPreference("trick_play_enabled", false)
-
-		/**
 		 * Enable libass.
 		 */
 		var assDirectPlay = booleanPreference("libass_enabled", false)
 
 		/**
+		 * Always burn in subtitles when transcoding.
+		 */
+		var subtitlesBurnDuringTranscode = booleanPreference("subtitles_burn_during_transcode", false)
+
+		/**
 		 * Enable PGS subtitle direct-play.
 		 */
 		var pgsDirectPlay = booleanPreference("pgs_enabled", true)
+
+		/**
+		 * Enable the use of software-based codecs.
+		 */
+		var softwareCodecsEnabled = booleanPreference("software_codecs_enabled", true)
 	}
 
 	init {
