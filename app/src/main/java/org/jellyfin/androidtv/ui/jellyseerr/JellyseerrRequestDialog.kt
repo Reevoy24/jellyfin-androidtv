@@ -103,6 +103,18 @@ fun JellyseerrRequestDialog(
 			includeSpecials = settings.enableSpecialEpisodes
 			tvDetails = repository.getTvDetails(result.id)
 			loading = false
+
+			// Pre-select all requestable seasons so the request button is usable immediately.
+			if (partialRequests) {
+				tvDetails?.let { details ->
+					val requestable = details.seasons
+						.filter { !it.isSpecial || includeSpecials }
+						.filter { details.statusForSeason(it.seasonNumber) == JellyseerrMediaStatus.UNKNOWN }
+						.map { it.seasonNumber }
+					selectedSeasons.clear()
+					selectedSeasons.addAll(requestable)
+				}
+			}
 		}
 
 		val list = repository.getServers(result.isMovie)
@@ -647,7 +659,10 @@ private fun primaryAction(
 		else -> null
 	}
 
-	loading || tvDetails == null -> null
+	loading -> null
+
+	// Details failed to load — still allow requesting the whole series so the button works.
+	tvDetails == null -> PrimaryAction(RequestKind.SERIES_ALL, R.string.jellyseerr_dialog_request_series, enabled = true)
 
 	partialRequests -> when {
 		requestableSeasons.isEmpty() -> null

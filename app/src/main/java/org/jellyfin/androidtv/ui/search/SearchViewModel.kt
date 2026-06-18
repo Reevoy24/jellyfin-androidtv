@@ -55,20 +55,37 @@ class SearchViewModel(
 	private val _jellyseerrResultsFlow = MutableStateFlow<List<JellyseerrSearchResult>>(emptyList())
 	val jellyseerrResultsFlow = _jellyseerrResultsFlow.asStateFlow()
 
-	fun searchImmediately(query: String) = searchDebounced(query, 0.milliseconds)
-
-	fun searchDebounced(query: String, debounce: Duration = debounceDuration): Boolean {
+	/** Submit (keyboard "search"): run the library search now AND query Jellyseerr. */
+	fun searchImmediately(query: String) {
 		val trimmed = query.trim()
-		if (trimmed == previousQuery) return false
+		runLibrarySearch(trimmed, 0.milliseconds)
+		runJellyseerrSearch(trimmed)
+	}
+
+	/**
+	 * Typing: run the (debounced) library search only. Jellyseerr is an expensive external call and
+	 * typing on a TV remote is slow (every keystroke would exceed the debounce), so it is queried
+	 * only on submit. Stale Jellyseerr results are cleared while the query keeps changing.
+	 */
+	fun searchDebounced(query: String) {
+		val trimmed = query.trim()
+		runLibrarySearch(trimmed, debounceDuration)
+
+		if (_jellyseerrResultsFlow.value.isNotEmpty()) {
+			jellyseerrJob?.cancel()
+			_jellyseerrResultsFlow.value = emptyList()
+		}
+	}
+
+	private fun runLibrarySearch(trimmed: String, debounce: Duration) {
+		if (trimmed == previousQuery) return
 		previousQuery = trimmed
 
 		searchJob?.cancel()
-		jellyseerrJob?.cancel()
 
 		if (trimmed.isBlank()) {
 			_searchResultsFlow.value = emptyList()
-			_jellyseerrResultsFlow.value = emptyList()
-			return true
+			return
 		}
 
 		searchJob = viewModelScope.launch {
@@ -77,19 +94,23 @@ class SearchViewModel(
 			_searchResultsFlow.value = groups.map { (stringRes, itemKinds) ->
 				async {
 					val result = searchRepository.search(trimmed, itemKinds)
-					val items = result.getOrNull().orEmpty()
-
-					SearchResultGroup(stringRes, items)
+					SearchResultGroup(stringRes, result.getOrNull().orEmpty())
 				}
 			}.awaitAll()
 		}
+	}
 
-		jellyseerrJob = viewModelScope.launch {
-			delay(debounce)
-			_jellyseerrResultsFlow.value = searchJellyseerr(trimmed)
+	private fun runJellyseerrSearch(trimmed: String) {
+		jellyseerrJob?.cancel()
+
+		if (trimmed.isBlank()) {
+			_jellyseerrResultsFlow.value = emptyList()
+			return
 		}
 
-		return true
+		jellyseerrJob = viewModelScope.launch {
+			_jellyseerrResultsFlow.value = searchJellyseerr(trimmed)
+		}
 	}
 
 	private suspend fun searchJellyseerr(query: String): List<JellyseerrSearchResult> {

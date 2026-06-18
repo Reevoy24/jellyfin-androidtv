@@ -29,35 +29,48 @@ class SearchFragmentDelegate(
 	/** Invoked when a Jellyseerr (request) result card is clicked. */
 	var onJellyseerrItemClicked: ((JellyseerrSearchResult) -> Unit)? = null
 
+	// The Jellyseerr row is managed independently from the library rows so that updating one does
+	// not rebuild (and re-fetch) the other. Library rows are only rebuilt when their results change.
+	private var lastLibraryGroups: Collection<SearchResultGroup>? = null
+	private var jellyseerrRow: ListRow? = null
+
 	fun showResults(
 		searchResultGroups: Collection<SearchResultGroup>,
-		jellyseerrResults: List<JellyseerrSearchResult> = emptyList(),
+		jellyseerrResults: List<JellyseerrSearchResult>,
 	) {
-		rowsAdapter.clear()
-		val adapters = mutableListOf<ItemRowAdapter>()
-		for ((labelRes, baseItems) in searchResultGroups) {
-			val adapter = ItemRowAdapter(
-				context,
-				baseItems.toList(),
-				CardPresenter(),
-				rowsAdapter,
-				QueryType.Search
-			).apply {
-				setRow(ListRow(HeaderItem(context.getString(labelRes)), this))
+		// Only rebuild (and re-fetch) the library rows when the library results actually changed —
+		// not when just the Jellyseerr row updates.
+		if (searchResultGroups != lastLibraryGroups) {
+			lastLibraryGroups = searchResultGroups
+			rowsAdapter.clear()
+			jellyseerrRow = null
+
+			val adapters = mutableListOf<ItemRowAdapter>()
+			for ((labelRes, baseItems) in searchResultGroups) {
+				val adapter = ItemRowAdapter(
+					context,
+					baseItems.toList(),
+					CardPresenter(),
+					rowsAdapter,
+					QueryType.Search
+				).apply {
+					setRow(ListRow(HeaderItem(context.getString(labelRes)), this))
+				}
+				adapters.add(adapter)
 			}
-			adapters.add(adapter)
+			for (adapter in adapters) adapter.Retrieve()
 		}
-		for (adapter in adapters) adapter.Retrieve()
+
+		// Replace just the Jellyseerr row (it always sits at the end).
+		jellyseerrRow?.let { rowsAdapter.remove(it) }
+		jellyseerrRow = null
 
 		if (jellyseerrResults.isNotEmpty()) {
 			val jellyseerrAdapter = ArrayObjectAdapter(JellyseerrCardPresenter())
 			jellyseerrResults.forEach(jellyseerrAdapter::add)
-			rowsAdapter.add(
-				ListRow(
-					HeaderItem(context.getString(R.string.jellyseerr_request_row)),
-					jellyseerrAdapter,
-				)
-			)
+			val row = ListRow(HeaderItem(context.getString(R.string.jellyseerr_request_row)), jellyseerrAdapter)
+			rowsAdapter.add(row)
+			jellyseerrRow = row
 		}
 	}
 

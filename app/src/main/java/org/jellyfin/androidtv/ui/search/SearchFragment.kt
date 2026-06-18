@@ -71,7 +71,9 @@ class SearchFragment : Fragment() {
 			} else {
 				textInputFocusRequester.requestFocus()
 			}
+		}
 
+		LaunchedEffect(Unit) {
 			combine(
 				viewModel.searchResultsFlow,
 				viewModel.jellyseerrResultsFlow,
