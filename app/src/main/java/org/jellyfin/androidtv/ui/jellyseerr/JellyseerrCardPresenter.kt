@@ -141,6 +141,21 @@ class JellyseerrCardPresenter : Presenter() {
 					)
 				}
 
+				// Media type tag (top-start) so movies and series are distinguishable at a glance.
+				Text(
+					text = stringResource(
+						if (result.isMovie) R.string.jellyseerr_type_movie else R.string.jellyseerr_type_series
+					),
+					color = JellyfinTheme.colorScheme.onBadge,
+					fontSize = 9.sp,
+					modifier = Modifier
+						.align(Alignment.TopStart)
+						.padding(4.dp)
+						.clip(RoundedCornerShape(4.dp))
+						.background(JellyfinTheme.colorScheme.badge)
+						.padding(horizontal = 5.dp, vertical = 2.dp),
+				)
+
 				val badge = when (result.status) {
 					JellyseerrMediaStatus.AVAILABLE -> stringResource(R.string.jellyseerr_status_available)
 					JellyseerrMediaStatus.PENDING -> stringResource(R.string.jellyseerr_status_requested)

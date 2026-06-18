@@ -34,6 +34,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -165,8 +166,10 @@ fun JellyseerrRequestDialog(
 		Column(
 			modifier = Modifier
 				.width(620.dp)
+				.heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.9f).dp)
 				.clip(RoundedCornerShape(12.dp))
 				.background(JellyfinTheme.colorScheme.background)
+				.verticalScroll(rememberScrollState())
 				.padding(28.dp),
 		) {
 			when (val picker = activePicker) {
@@ -271,13 +274,8 @@ private fun RequestForm(
 
 	Spacer(modifier = Modifier.height(16.dp))
 
-	// Scrollable body: advanced options + season selection / status
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.heightIn(max = 280.dp)
-			.verticalScroll(rememberScrollState()),
-	) {
+	// Body: advanced options + season selection / status (the whole dialog scrolls).
+	Column(modifier = Modifier.fillMaxWidth()) {
 		if (servers.isNotEmpty()) {
 			SectionLabel(stringResource(R.string.jellyseerr_dialog_advanced))
 			OptionRow(
@@ -402,12 +400,7 @@ private fun PickerScreen(
 		return
 	}
 
-	Column(
-		modifier = Modifier
-			.fillMaxWidth()
-			.heightIn(max = 320.dp)
-			.verticalScroll(rememberScrollState()),
-	) {
+	Column(modifier = Modifier.fillMaxWidth()) {
 		options.forEachIndexed { index, option ->
 			ChoiceRow(
 				label = option.label,

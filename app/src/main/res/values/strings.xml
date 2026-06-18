@@ -51,6 +51,8 @@
     <string name="jellyseerr_dialog_folder">Root folder</string>
     <string name="jellyseerr_dialog_select_quality">Select quality…</string>
     <string name="jellyseerr_dialog_select_folder">Select folder…</string>
+    <string name="jellyseerr_type_movie">Movie</string>
+    <string name="jellyseerr_type_series">Series</string>
 
     <string name="lbl_search">Search</string>
     <string name="msg_not_implemented">" not implemented"</string>
