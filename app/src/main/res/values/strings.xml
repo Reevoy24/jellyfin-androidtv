@@ -54,6 +54,18 @@
     <string name="jellyseerr_type_movie">Movie</string>
     <string name="jellyseerr_type_series">Series</string>
 
+    <!-- Calendar (upcoming releases via Jellyfin-Enhanced arr calendar) -->
+    <string name="lbl_calendar">Calendar</string>
+    <string name="calendar_empty">No upcoming releases</string>
+    <string name="calendar_today">Today</string>
+    <string name="calendar_tomorrow">Tomorrow</string>
+    <string name="calendar_cinema_release">Cinema release</string>
+    <string name="calendar_digital_release">Digital release</string>
+    <string name="calendar_physical_release">Physical release</string>
+    <string name="calendar_episode">Episode</string>
+    <string name="calendar_release">Release</string>
+    <string name="calendar_available">Available</string>
+
     <string name="lbl_search">Search</string>
     <string name="msg_not_implemented">" not implemented"</string>
     <string name="lbl_latest">Recently added</string>

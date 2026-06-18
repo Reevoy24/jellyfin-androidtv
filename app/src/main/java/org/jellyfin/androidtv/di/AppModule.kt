@@ -30,6 +30,9 @@ import org.jellyfin.androidtv.data.repository.UserViewsRepositoryImpl
 import org.jellyfin.androidtv.data.service.BackgroundService
 import org.jellyfin.androidtv.integration.dream.DreamViewModel
 import org.jellyfin.androidtv.ui.InteractionTrackerViewModel
+import org.jellyfin.androidtv.ui.calendar.CalendarRepository
+import org.jellyfin.androidtv.ui.calendar.CalendarRepositoryImpl
+import org.jellyfin.androidtv.ui.calendar.CalendarViewModel
 import org.jellyfin.androidtv.ui.itemhandling.ItemLauncher
 import org.jellyfin.androidtv.ui.jellyseerr.JellyseerrRepository
 import org.jellyfin.androidtv.ui.jellyseerr.JellyseerrRepositoryImpl
@@ -150,6 +153,7 @@ val appModule = module {
 	single<NavigationRepository> { NavigationRepositoryImpl(Destinations.home) }
 	single<SearchRepository> { SearchRepositoryImpl(get()) }
 	single<JellyseerrRepository> { JellyseerrRepositoryImpl(get()) }
+	single<CalendarRepository> { CalendarRepositoryImpl(get()) }
 	single<MediaSegmentRepository> { MediaSegmentRepositoryImpl(get(), get()) }
 	single<ExternalAppRepository> { ExternalAppRepository(get(), getAll(), get<DefaultExternalPlayerApi>()) }
 
@@ -167,6 +171,7 @@ val appModule = module {
 	viewModel { StillWatchingViewModel(get(), get(), get(), get()) }
 	viewModel { PhotoPlayerViewModel(get()) }
 	viewModel { SearchViewModel(get(), get()) }
+	viewModel { CalendarViewModel(get()) }
 	viewModel { DreamViewModel(get(), get(), get(), get(), get()) }
 	viewModel { SettingsViewModel() }
 

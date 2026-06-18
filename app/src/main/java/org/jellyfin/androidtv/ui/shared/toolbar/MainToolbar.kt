@@ -50,6 +50,7 @@ enum class MainToolbarActiveButton {
 	User,
 	Home,
 	Search,
+	Calendar,
 
 	None,
 }
@@ -58,12 +59,14 @@ class MainToolbarFocusRequesters(
 	val user: FocusRequester,
 	val home: FocusRequester,
 	val search: FocusRequester,
+	val calendar: FocusRequester,
 	val settings: FocusRequester,
 ) {
 	fun forActiveButton(activeButton: MainToolbarActiveButton) = when (activeButton) {
 		MainToolbarActiveButton.User -> user
 		MainToolbarActiveButton.Home -> home
 		MainToolbarActiveButton.Search -> search
+		MainToolbarActiveButton.Calendar -> calendar
 		MainToolbarActiveButton.None -> home
 	}
 }
@@ -74,6 +77,7 @@ fun rememberMainToolbarFocusRequesters() = remember {
 		user = FocusRequester(),
 		home = FocusRequester(),
 		search = FocusRequester(),
+		calendar = FocusRequester(),
 		settings = FocusRequester(),
 	)
 }
@@ -199,6 +203,25 @@ private fun MainToolbar(
 		},
 		end = {
 			ToolbarButtons {
+				IconButton(
+					modifier = Modifier
+						.focusRequester(focusRequesters.calendar)
+						.focusProperties {
+							if (downFocusRequester != null) down = downFocusRequester
+						},
+					onClick = {
+						if (activeButton != MainToolbarActiveButton.Calendar) {
+							navigationRepository.navigate(Destinations.calendar)
+						}
+					},
+					colors = if (activeButton == MainToolbarActiveButton.Calendar) activeButtonColors else ButtonDefaults.colors(),
+				) {
+					Icon(
+						imageVector = ImageVector.vectorResource(R.drawable.ic_calendar),
+						contentDescription = stringResource(R.string.lbl_calendar),
+					)
+				}
+
 				IconButton(
 					modifier = Modifier
 						.focusRequester(focusRequesters.settings)
