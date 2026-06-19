@@ -7,6 +7,8 @@ import kotlinx.serialization.json.Json
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.HttpMethod
 import timber.log.Timber
+import java.time.Duration
+import java.time.Instant
 
 /**
  * Loads upcoming releases from the Jellyfin-Enhanced plugin's arr calendar endpoint, using the
@@ -28,11 +30,17 @@ class CalendarRepositoryImpl(
 
 	override suspend fun getUpcoming(): List<CalendarItem> = withContext(Dispatchers.IO) {
 		try {
+			val now = Instant.now()
+			val end = now.plus(Duration.ofDays(90))
 			val response = apiClient.request(
 				method = HttpMethod.GET,
 				pathTemplate = "/JellyfinEnhanced/arr/calendar",
+				queryParameters = mapOf("start" to now.toString(), "end" to end.toString()),
 			)
-			json.decodeFromString<List<CalendarItem>>(response.body.decodeToString())
+			// The endpoint returns an envelope: { events: [...], errors: [...] }.
+			json.decodeFromString<CalendarResponse>(response.body.decodeToString())
+				.events
+				.filter { it.releaseDate != null }
 		} catch (error: Exception) {
 			Timber.w(error, "Jellyfin-Enhanced calendar fetch failed")
 			emptyList()

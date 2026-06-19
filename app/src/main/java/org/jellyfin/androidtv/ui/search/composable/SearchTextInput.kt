@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import kotlinx.coroutines.delay
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jellyfin.androidtv.R
@@ -44,8 +45,12 @@ fun SearchTextInput(
 
 	// Some vendors (notably Amazon / Fire TV) don't reliably raise the soft keyboard from
 	// showKeyboardOnFocus alone (requiring a second click), so also request it explicitly on focus.
+	// A short delay gives the IME time to bind — requesting it immediately on focus is unreliable.
 	LaunchedEffect(focused) {
-		if (focused) keyboardController?.show()
+		if (focused) {
+			delay(150)
+			keyboardController?.show()
+		}
 	}
 
 	val color = when {

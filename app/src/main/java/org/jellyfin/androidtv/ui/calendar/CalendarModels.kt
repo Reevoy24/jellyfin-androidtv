@@ -11,6 +11,15 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 
 /**
+ * Envelope returned by `GET /JellyfinEnhanced/arr/calendar`: `{ "events": [...], "errors": [...] }`.
+ * (`errors` is ignored here — it carries per-instance failures the web client surfaces as toasts.)
+ */
+@Serializable
+data class CalendarResponse(
+	val events: List<CalendarItem> = emptyList(),
+)
+
+/**
  * An upcoming release from the Jellyfin-Enhanced plugin's `/JellyfinEnhanced/arr/calendar` endpoint
  * (a Sonarr/Radarr calendar item). Only the fields the app renders are modelled.
  */
