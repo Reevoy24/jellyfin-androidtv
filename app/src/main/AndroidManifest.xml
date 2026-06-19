@@ -101,6 +101,7 @@
         <!-- Authentication -->
         <activity
             android:name=".ui.startup.StartupActivity"
+            android:banner="@mipmap/app_banner"
             android:exported="true"
             android:launchMode="singleTask"
             android:noHistory="true"
