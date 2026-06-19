@@ -3,7 +3,6 @@ package org.jellyfin.androidtv.ui.base.button
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -47,10 +46,10 @@ fun ButtonBase(
 	ProvideTextStyle(value = JellyfinTheme.typography.default.copy(fontSize = 14.sp, color = colors.second)) {
 		Box(
 			modifier = modifier
-				.focusable(
-					interactionSource = interactionSource,
-					enabled = enabled,
-				)
+				// combinedClickable already makes the element focusable (and forwards focus to
+				// interactionSource). A separate focusable() adds a SECOND focus target, which on
+				// D-pad means the first OK lands on the focusable and only the second triggers the
+				// click — the "press twice" bug. So rely on combinedClickable's own focusability.
 				.combinedClickable(
 					interactionSource = interactionSource,
 					indication = null,

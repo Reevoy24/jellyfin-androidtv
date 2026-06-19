@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -152,45 +153,61 @@ private fun DayHeader(date: LocalDate) {
 private fun CalendarEventCard(item: CalendarItem, modifier: Modifier = Modifier) {
 	var focused by remember { mutableStateOf(false) }
 	val accent = Color(item.release.color)
+	val shape = RoundedCornerShape(10.dp)
 
-	Row(
+	Box(
 		modifier = modifier
 			.fillMaxWidth()
-			.height(IntrinsicSize.Min)
-			.clip(RoundedCornerShape(8.dp))
+			.height(100.dp)
+			.clip(shape)
 			.onFocusChanged { focused = it.isFocused }
-			.background(
-				if (focused) JellyfinTheme.colorScheme.listButtonFocused else JellyfinTheme.colorScheme.surface
+			.background(JellyfinTheme.colorScheme.surface)
+			.border(
+				width = if (focused) 2.dp else 0.dp,
+				color = if (focused) JellyfinTheme.colorScheme.buttonFocused else Color.Transparent,
+				shape = shape,
 			)
 			.focusable(),
-		verticalAlignment = Alignment.CenterVertically,
 	) {
-		Box(
-			modifier = Modifier
-				.width(4.dp)
-				.fillMaxHeight()
-				.background(accent)
-		)
-
-		item.posterOrBackdrop?.let { url ->
+		val backdrop = item.backdropUrl ?: item.posterUrl
+		if (backdrop != null) {
 			AsyncImage(
-				url = url,
-				modifier = Modifier
-					.width(48.dp)
-					.height(72.dp),
+				url = backdrop,
+				modifier = Modifier.fillMaxSize(),
 				scaleType = ImageView.ScaleType.CENTER_CROP,
 			)
 		}
 
+		// Dark gradient (heavier on the left) keeps the title readable over the backdrop.
+		Box(
+			modifier = Modifier
+				.fillMaxSize()
+				.background(
+					Brush.horizontalGradient(
+						listOf(Color.Black.copy(alpha = 0.88f), Color.Black.copy(alpha = 0.35f))
+					)
+				)
+		)
+
+		// Release-type accent bar.
+		Box(
+			modifier = Modifier
+				.width(5.dp)
+				.fillMaxHeight()
+				.background(accent)
+				.align(Alignment.CenterStart)
+		)
+
 		Column(
 			modifier = Modifier
-				.weight(1f)
-				.padding(horizontal = 12.dp, vertical = 8.dp),
+				.fillMaxSize()
+				.padding(start = 18.dp, end = 14.dp, top = 10.dp, bottom = 10.dp),
+			verticalArrangement = Arrangement.Center,
 		) {
 			Text(
 				text = item.title,
-				color = JellyfinTheme.colorScheme.onBackground,
-				fontSize = 15.sp,
+				color = Color.White,
+				fontSize = 16.sp,
 				fontWeight = FontWeight.Bold,
 				maxLines = 1,
 				overflow = TextOverflow.Ellipsis,
@@ -198,16 +215,16 @@ private fun CalendarEventCard(item: CalendarItem, modifier: Modifier = Modifier)
 			item.subtitle?.takeIf { it.isNotBlank() }?.let { subtitle ->
 				Text(
 					text = subtitle,
-					color = JellyfinTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+					color = Color.White.copy(alpha = 0.85f),
 					fontSize = 12.sp,
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis,
-					modifier = Modifier.padding(top = 1.dp),
+					modifier = Modifier.padding(top = 2.dp),
 				)
 			}
 
 			Row(
-				modifier = Modifier.padding(top = 4.dp),
+				modifier = Modifier.padding(top = 6.dp),
 				horizontalArrangement = Arrangement.spacedBy(6.dp),
 				verticalAlignment = Alignment.CenterVertically,
 			) {
@@ -219,13 +236,13 @@ private fun CalendarEventCard(item: CalendarItem, modifier: Modifier = Modifier)
 				)
 				Text(
 					text = "· ${item.sourceLabel}",
-					color = JellyfinTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+					color = Color.White.copy(alpha = 0.7f),
 					fontSize = 11.sp,
 				)
 				item.localTime?.let { time ->
 					Text(
 						text = "· ${time.format(TIME_FORMATTER)}",
-						color = JellyfinTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+						color = Color.White.copy(alpha = 0.7f),
 						fontSize = 11.sp,
 					)
 				}
@@ -239,7 +256,8 @@ private fun CalendarEventCard(item: CalendarItem, modifier: Modifier = Modifier)
 				fontSize = 10.sp,
 				fontWeight = FontWeight.Bold,
 				modifier = Modifier
-					.padding(end = 12.dp)
+					.align(Alignment.TopEnd)
+					.padding(8.dp)
 					.clip(RoundedCornerShape(4.dp))
 					.background(JellyfinTheme.colorScheme.badge)
 					.padding(horizontal = 6.dp, vertical = 3.dp),
