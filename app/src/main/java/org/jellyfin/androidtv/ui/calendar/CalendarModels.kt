@@ -57,13 +57,14 @@ data class CalendarItem(
 
 	val sourceLabel: String get() = instanceName?.takeIf { it.isNotBlank() } ?: source
 
-	val posterOrBackdrop: String? get() = posterUrl ?: backdropUrl
-
 	private val instant: Instant?
 		get() = releaseDate?.let { raw ->
 			runCatching { Instant.parse(raw) }.getOrNull()
 				?: runCatching { OffsetDateTime.parse(raw).toInstant() }.getOrNull()
 				?: runCatching { LocalDateTime.parse(raw).toInstant(ZoneOffset.UTC) }.getOrNull()
+				// Date-only releases (e.g. "2026-06-19") — anchor to start of the local day so the
+				// item still groups by date (and localTime correctly reports midnight → null).
+				?: runCatching { LocalDate.parse(raw).atStartOfDay(ZoneId.systemDefault()).toInstant() }.getOrNull()
 		}
 
 	/** Local date of the release, used to group items into days. */

@@ -69,7 +69,16 @@ android {
 
 			buildConfigField("boolean", "DEVELOPMENT", "false")
 
-			signingConfig = signingConfigs.findByName("release")
+			val releaseSigning = signingConfigs.findByName("release")
+			if (releaseSigning != null) {
+				signingConfig = releaseSigning
+			} else {
+				logger.warn(
+					"⚠ No release keystore configured (keystore.file/keystore.password/signing.key.alias/" +
+						"signing.key.password or the KEYSTORE_*/SIGNING_* env vars) — the release APK will be " +
+						"UNSIGNED and cannot be installed."
+				)
+			}
 		}
 
 		debug {

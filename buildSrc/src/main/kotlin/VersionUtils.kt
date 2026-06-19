@@ -42,12 +42,15 @@ fun getVersionCode(versionName: String): Int {
 				versionName.substring(index + 1, versionName.length)
 		}
 
-	// Parse core part
-	val (major, minor, patch) = versionCore
+	// Parse core part (tolerate fewer than three numeric segments, e.g. "1.0" or "1")
+	val coreParts = versionCore
 		.splitToSequence('.')
 		.mapNotNull(String::toIntOrNull)
 		.take(3)
 		.toList()
+	val major = coreParts.getOrElse(0) { 0 }
+	val minor = coreParts.getOrElse(1) { 0 }
+	val patch = coreParts.getOrElse(2) { 0 }
 
 	// Parse pre release part (ignore type, only get the number)
 	val buildVersion = versionPreRelease

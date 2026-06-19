@@ -1131,6 +1131,10 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     };
 
     public void showQuickChannelChanger() {
+        // Mark the popup panel visible synchronously so showChapterPanel() disables the skip overlay
+        // immediately (it is otherwise only set 500ms later, leaving the skip UI interactive and able
+        // to steal DPAD_CENTER/BACK while the selector is open).
+        mPopupPanelVisible = true;
         showChapterPanel();
         mHandler.postDelayed(() -> {
             if (!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) return;
@@ -1144,6 +1148,9 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     }
 
     public void showChapterSelector() {
+        // See showQuickChannelChanger(): set the flag synchronously so the skip overlay is disabled
+        // the moment the chapter selector opens.
+        mPopupPanelVisible = true;
         showChapterPanel();
         mHandler.postDelayed(() -> {
             if (!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) return;

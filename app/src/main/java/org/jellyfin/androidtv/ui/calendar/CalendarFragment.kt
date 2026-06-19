@@ -16,8 +16,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -59,6 +60,7 @@ import org.jellyfin.androidtv.ui.shared.toolbar.rememberMainToolbarFocusRequeste
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -71,6 +73,12 @@ private val FULL_DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern
 /** Monday of the week containing [date]. */
 private fun weekStart(date: LocalDate): LocalDate = date.minusDays((date.dayOfWeek.value - 1).toLong())
 
+private fun groupByDate(items: List<CalendarItem>): Map<LocalDate, List<CalendarItem>> =
+	items
+		.filter { it.localDate != null }
+		.groupBy { it.localDate!! }
+		.mapValues { (_, list) -> list.sortedWith(compareBy({ it.localTime ?: LocalTime.MIN }, { it.title })) }
+
 class CalendarFragment : Fragment() {
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -78,22 +86,16 @@ class CalendarFragment : Fragment() {
 		savedInstanceState: Bundle?,
 	) = content {
 		val viewModel = koinViewModel<CalendarViewModel>()
-		val items by viewModel.items.collectAsState()
+		val state by viewModel.state.collectAsState()
 		val view by viewModel.view.collectAsState()
 		val anchor by viewModel.anchor.collectAsState()
 
 		val toolbarFocusRequesters = rememberMainToolbarFocusRequesters()
 		val headerFocusRequester = remember { FocusRequester() }
 
-		LaunchedEffect(items != null) {
-			runCatching { (if (items != null) headerFocusRequester else toolbarFocusRequesters.calendar).requestFocus() }
-		}
-
-		val byDate = remember(items) {
-			items.orEmpty()
-				.filter { it.localDate != null }
-				.groupBy { it.localDate!! }
-				.mapValues { (_, list) -> list.sortedWith(compareBy({ it.localTime ?: java.time.LocalTime.MIN }, { it.title })) }
+		val isContent = state is CalendarViewModel.State.Content
+		LaunchedEffect(isContent) {
+			runCatching { (if (isContent) headerFocusRequester else toolbarFocusRequesters.calendar).requestFocus() }
 		}
 
 		Column(modifier = Modifier.fillMaxSize()) {
@@ -103,14 +105,33 @@ class CalendarFragment : Fragment() {
 				downFocusRequester = headerFocusRequester,
 			)
 
-			when {
-				items == null -> CenteredBox { CircularProgressIndicator(modifier = Modifier.height(48.dp)) }
+			when (val current = state) {
+				is CalendarViewModel.State.Loading -> CenteredBox {
+					CircularProgressIndicator(modifier = Modifier.height(48.dp))
+				}
 
-				else -> {
+				is CalendarViewModel.State.Error -> CenteredBox {
+					Column(horizontalAlignment = Alignment.CenterHorizontally) {
+						Text(
+							text = stringResource(R.string.calendar_error),
+							color = JellyfinTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+							fontSize = 16.sp,
+							modifier = Modifier.padding(bottom = 12.dp),
+						)
+						Button(onClick = viewModel::load, modifier = Modifier.focusRequester(headerFocusRequester)) {
+							Text(stringResource(R.string.calendar_retry))
+						}
+					}
+				}
+
+				is CalendarViewModel.State.Content -> {
+					val byDate = remember(current.items) { groupByDate(current.items) }
 					CalendarHeader(
 						view = view,
 						anchor = anchor,
-						todayFocusRequester = headerFocusRequester,
+						switcherFocusRequester = headerFocusRequester,
+						canPrevious = viewModel.canShift(-1),
+						canNext = viewModel.canShift(1),
 						onPrevious = viewModel::goPrevious,
 						onToday = viewModel::goToday,
 						onNext = viewModel::goNext,
@@ -137,10 +158,23 @@ private fun CenteredBox(content: @Composable () -> Unit) {
 }
 
 @Composable
+private fun EmptyText() {
+	CenteredBox {
+		Text(
+			text = stringResource(R.string.calendar_empty),
+			color = JellyfinTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+			fontSize = 16.sp,
+		)
+	}
+}
+
+@Composable
 private fun CalendarHeader(
 	view: CalendarView,
 	anchor: LocalDate,
-	todayFocusRequester: FocusRequester,
+	switcherFocusRequester: FocusRequester,
+	canPrevious: Boolean,
+	canNext: Boolean,
 	onPrevious: () -> Unit,
 	onToday: () -> Unit,
 	onNext: () -> Unit,
@@ -173,19 +207,18 @@ private fun CalendarHeader(
 
 		if (view != CalendarView.AGENDA) {
 			Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-				Button(onClick = onPrevious) { Text("‹") }
-				Button(onClick = onToday, modifier = Modifier.focusRequester(todayFocusRequester)) {
-					Text(stringResource(R.string.calendar_today))
-				}
-				Button(onClick = onNext) { Text("›") }
+				Button(onClick = onPrevious, enabled = canPrevious) { Text("‹") }
+				Button(onClick = onToday) { Text(stringResource(R.string.calendar_today)) }
+				Button(onClick = onNext, enabled = canNext) { Text("›") }
 			}
-		} else {
-			// Keep the today focus requester attached so it always has a target.
-			Box(modifier = Modifier.focusRequester(todayFocusRequester).focusable())
 		}
 
 		Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-			ViewButton(stringResource(R.string.calendar_view_day), view == CalendarView.DAY) { onSetView(CalendarView.DAY) }
+			ViewButton(
+				stringResource(R.string.calendar_view_day),
+				view == CalendarView.DAY,
+				Modifier.focusRequester(switcherFocusRequester),
+			) { onSetView(CalendarView.DAY) }
 			ViewButton(stringResource(R.string.calendar_view_week), view == CalendarView.WEEK) { onSetView(CalendarView.WEEK) }
 			ViewButton(stringResource(R.string.calendar_view_month), view == CalendarView.MONTH) { onSetView(CalendarView.MONTH) }
 			ViewButton(stringResource(R.string.calendar_view_agenda), view == CalendarView.AGENDA) { onSetView(CalendarView.AGENDA) }
@@ -194,7 +227,7 @@ private fun CalendarHeader(
 }
 
 @Composable
-private fun ViewButton(label: String, active: Boolean, onClick: () -> Unit) {
+private fun ViewButton(label: String, active: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
 	val colors = if (active) {
 		ButtonDefaults.colors(
 			containerColor = JellyfinTheme.colorScheme.buttonActive,
@@ -203,7 +236,7 @@ private fun ViewButton(label: String, active: Boolean, onClick: () -> Unit) {
 	} else {
 		ButtonDefaults.colors()
 	}
-	Button(onClick = onClick, colors = colors) { Text(label) }
+	Button(onClick = onClick, modifier = modifier, colors = colors) { Text(label) }
 }
 
 // ---- Views ----------------------------------------------------------------
@@ -214,26 +247,20 @@ private fun AgendaView(byDate: Map<LocalDate, List<CalendarItem>>) {
 	val days = byDate.keys.filter { it >= today }.sorted()
 
 	if (days.isEmpty()) {
-		CenteredBox {
-			Text(
-				text = stringResource(R.string.calendar_empty),
-				color = JellyfinTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-				fontSize = 16.sp,
-			)
-		}
+		EmptyText()
 		return
 	}
 
-	Column(
+	// Lazy so the (potentially months-long) agenda only composes/loads visible cards.
+	LazyColumn(
 		modifier = Modifier
 			.fillMaxSize()
-			.verticalScroll(rememberScrollState())
 			.padding(horizontal = 48.dp, vertical = 8.dp),
 		verticalArrangement = Arrangement.spacedBy(6.dp),
 	) {
 		for (day in days) {
-			DayHeader(day)
-			for (item in byDate[day].orEmpty()) EventCard(item)
+			item { DayHeader(day) }
+			items(byDate[day].orEmpty()) { item -> EventCard(item) }
 		}
 	}
 }
@@ -242,23 +269,16 @@ private fun AgendaView(byDate: Map<LocalDate, List<CalendarItem>>) {
 private fun DayView(byDate: Map<LocalDate, List<CalendarItem>>, anchor: LocalDate) {
 	val dayItems = byDate[anchor].orEmpty()
 	if (dayItems.isEmpty()) {
-		CenteredBox {
-			Text(
-				text = stringResource(R.string.calendar_empty),
-				color = JellyfinTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-				fontSize = 16.sp,
-			)
-		}
+		EmptyText()
 		return
 	}
-	Column(
+	LazyColumn(
 		modifier = Modifier
 			.fillMaxSize()
-			.verticalScroll(rememberScrollState())
 			.padding(horizontal = 48.dp, vertical = 8.dp),
 		verticalArrangement = Arrangement.spacedBy(8.dp),
 	) {
-		for (item in dayItems) EventCard(item)
+		items(dayItems) { item -> EventCard(item) }
 	}
 }
 
@@ -299,7 +319,6 @@ private fun MonthView(byDate: Map<LocalDate, List<CalendarItem>>, anchor: LocalD
 			.padding(horizontal = 24.dp, vertical = 8.dp),
 		verticalArrangement = Arrangement.spacedBy(6.dp),
 	) {
-		// Weekday header row
 		Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
 			for (d in 0..6) {
 				Text(
@@ -374,7 +393,7 @@ private fun MonthCell(date: LocalDate, items: List<CalendarItem>, inMonth: Boole
 
 	Column(
 		modifier = modifier
-			.heightIn(min = 92.dp)
+			.height(92.dp)
 			.clip(RoundedCornerShape(6.dp))
 			.onFocusChanged { focused = it.isFocused }
 			.background(
@@ -466,6 +485,7 @@ private fun EventCard(item: CalendarItem, modifier: Modifier = Modifier) {
 				.align(Alignment.BottomStart)
 		)
 
+		// Top-left pills: release time and/or an "available" (already-downloaded) badge.
 		if (item.localTime != null || item.hasFile) {
 			Row(
 				modifier = Modifier
@@ -476,12 +496,24 @@ private fun EventCard(item: CalendarItem, modifier: Modifier = Modifier) {
 				item.localTime?.let { time ->
 					Text(
 						text = time.format(TIME_FORMATTER),
+						color = Color.White,
+						fontSize = 9.sp,
+						fontWeight = FontWeight.Bold,
+						modifier = Modifier
+							.clip(RoundedCornerShape(4.dp))
+							.background(Color.Black.copy(alpha = 0.6f))
+							.padding(horizontal = 5.dp, vertical = 2.dp),
+					)
+				}
+				if (item.hasFile) {
+					Text(
+						text = stringResource(R.string.calendar_available),
 						color = JellyfinTheme.colorScheme.onBadge,
 						fontSize = 9.sp,
 						fontWeight = FontWeight.Bold,
 						modifier = Modifier
 							.clip(RoundedCornerShape(4.dp))
-							.background(if (item.hasFile) JellyfinTheme.colorScheme.badge else Color.Black.copy(alpha = 0.6f))
+							.background(JellyfinTheme.colorScheme.badge)
 							.padding(horizontal = 5.dp, vertical = 2.dp),
 					)
 				}

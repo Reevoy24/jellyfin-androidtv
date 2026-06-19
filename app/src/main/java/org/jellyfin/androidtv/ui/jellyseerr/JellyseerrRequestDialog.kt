@@ -89,12 +89,15 @@ fun JellyseerrRequestDialog(
 	suspend fun applyServer(server: JellyseerrServer) {
 		selectedServer = server
 		serverDetails = null
-		selectedProfileId = null
-		selectedFolder = null
+		// Pre-fill from the server's own active defaults SYNCHRONOUSLY so advancedOptions is never
+		// half-populated (serverId without profile/folder) during the details fetch below.
+		selectedProfileId = server.activeProfileId
+		selectedFolder = server.activeDirectory
 		val details = repository.getServerDetails(result.isMovie, server.id)
 		serverDetails = details
-		selectedProfileId = server.activeProfileId ?: details?.profiles?.firstOrNull()?.id
-		selectedFolder = server.activeDirectory ?: details?.rootFolders?.firstOrNull()?.path
+		// Fill any remaining gaps (server had no active default) from the loaded details.
+		if (selectedProfileId == null) selectedProfileId = details?.profiles?.firstOrNull()?.id
+		if (selectedFolder == null) selectedFolder = details?.rootFolders?.firstOrNull()?.path
 	}
 
 	LaunchedEffect(result.id) {
@@ -107,14 +110,8 @@ fun JellyseerrRequestDialog(
 
 			// Pre-select all requestable seasons so the request button is usable immediately.
 			if (partialRequests) {
-				tvDetails?.let { details ->
-					val requestable = details.seasons
-						.filter { !it.isSpecial || includeSpecials }
-						.filter { details.statusForSeason(it.seasonNumber) == JellyseerrMediaStatus.UNKNOWN }
-						.map { it.seasonNumber }
-					selectedSeasons.clear()
-					selectedSeasons.addAll(requestable)
-				}
+				selectedSeasons.clear()
+				selectedSeasons.addAll(requestableSeasonsOf(tvDetails, includeSpecials))
 			}
 		}
 
@@ -148,10 +145,9 @@ fun JellyseerrRequestDialog(
 	}
 
 	// Seasons the user may still request (skip specials unless enabled, and skip ones already there).
-	val requestableSeasons = tvDetails?.seasons.orEmpty()
-		.filter { !it.isSpecial || includeSpecials }
-		.filter { tvDetails?.statusForSeason(it.seasonNumber) == JellyseerrMediaStatus.UNKNOWN }
-		.map { it.seasonNumber }
+	val requestableSeasons = remember(tvDetails, includeSpecials) {
+		requestableSeasonsOf(tvDetails, includeSpecials)
+	}
 
 	DialogBase(
 		visible = true,
@@ -666,5 +662,17 @@ private fun primaryAction(
 		)
 	}
 
-	else -> PrimaryAction(RequestKind.SERIES_ALL, R.string.jellyseerr_dialog_request_series, enabled = true)
+	// Non-partial whole-series request — but only when the show isn't already available/pending,
+	// mirroring the movie path (otherwise the button offered a pointless re-request).
+	else -> when (JellyseerrMediaStatus.fromCode(tvDetails.mediaInfo?.status)) {
+		JellyseerrMediaStatus.UNKNOWN -> PrimaryAction(RequestKind.SERIES_ALL, R.string.jellyseerr_dialog_request_series, enabled = true)
+		else -> null
+	}
 }
+
+/** Seasons still requestable for a show: non-special (unless enabled) and not already available/pending. */
+private fun requestableSeasonsOf(details: JellyseerrTvDetails?, includeSpecials: Boolean): List<Int> =
+	details?.seasons.orEmpty()
+		.filter { !it.isSpecial || includeSpecials }
+		.filter { details?.statusForSeason(it.seasonNumber) == JellyseerrMediaStatus.UNKNOWN }
+		.map { it.seasonNumber }

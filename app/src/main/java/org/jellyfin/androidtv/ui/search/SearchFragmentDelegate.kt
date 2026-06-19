@@ -39,8 +39,9 @@ class SearchFragmentDelegate(
 		jellyseerrResults: List<JellyseerrSearchResult>,
 	) {
 		// Only rebuild (and re-fetch) the library rows when the library results actually changed —
-		// not when just the Jellyseerr row updates.
-		if (searchResultGroups != lastLibraryGroups) {
+		// not when just the Jellyseerr row updates. The ViewModel emits the SAME list instance while
+		// the query is unchanged, so a cheap reference check suffices (no deep BaseItemDto compare).
+		if (searchResultGroups !== lastLibraryGroups) {
 			lastLibraryGroups = searchResultGroups
 			rowsAdapter.clear()
 			jellyseerrRow = null

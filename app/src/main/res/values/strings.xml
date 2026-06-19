@@ -57,6 +57,8 @@
     <!-- Calendar (upcoming releases via Jellyfin-Enhanced arr calendar) -->
     <string name="lbl_calendar">Calendar</string>
     <string name="calendar_empty">No upcoming releases</string>
+    <string name="calendar_error">Couldn\'t load the calendar</string>
+    <string name="calendar_retry">Retry</string>
     <string name="calendar_today">Today</string>
     <string name="calendar_tomorrow">Tomorrow</string>
     <string name="calendar_cinema_release">Cinema release</string>

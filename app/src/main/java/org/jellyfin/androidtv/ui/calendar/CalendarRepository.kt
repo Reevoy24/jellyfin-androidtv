@@ -15,8 +15,11 @@ import java.time.Instant
  * authenticated [ApiClient] (same plugin and auth as the Jellyseerr integration).
  */
 interface CalendarRepository {
-	/** Releases for a window around now (−14 .. +180 days) covering the calendar views. Empty on failure. */
-	suspend fun getUpcoming(): List<CalendarItem>
+	/**
+	 * Releases for a window around now (−14 .. +180 days) covering the calendar views.
+	 * Returns `null` on failure (so the UI can distinguish an error from a genuinely empty calendar).
+	 */
+	suspend fun getUpcoming(): List<CalendarItem>?
 }
 
 class CalendarRepositoryImpl(
@@ -28,7 +31,7 @@ class CalendarRepositoryImpl(
 		coerceInputValues = true
 	}
 
-	override suspend fun getUpcoming(): List<CalendarItem> = withContext(Dispatchers.IO) {
+	override suspend fun getUpcoming(): List<CalendarItem>? = withContext(Dispatchers.IO) {
 		try {
 			val now = Instant.now()
 			val start = now.minus(Duration.ofDays(14))
@@ -44,7 +47,7 @@ class CalendarRepositoryImpl(
 				.filter { it.releaseDate != null }
 		} catch (error: Exception) {
 			Timber.w(error, "Jellyfin-Enhanced calendar fetch failed")
-			emptyList()
+			null
 		}
 	}
 }
