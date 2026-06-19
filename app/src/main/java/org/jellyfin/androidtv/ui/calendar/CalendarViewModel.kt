@@ -5,39 +5,53 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalTime
+import java.time.LocalDate
+
+/** The calendar display modes, matching the plugin's web calendar. */
+enum class CalendarView { AGENDA, DAY, WEEK, MONTH }
 
 class CalendarViewModel(
 	private val calendarRepository: CalendarRepository,
 ) : ViewModel() {
-	sealed interface State {
-		data object Loading : State
-		data object Empty : State
-		data class Content(val days: List<CalendarDay>) : State
-	}
+	// null = still loading; otherwise the (possibly empty) loaded items.
+	private val _items = MutableStateFlow<List<CalendarItem>?>(null)
+	val items = _items.asStateFlow()
 
-	private val _state = MutableStateFlow<State>(State.Loading)
-	val state = _state.asStateFlow()
+	private val _view = MutableStateFlow(CalendarView.WEEK)
+	val view = _view.asStateFlow()
+
+	private val _anchor = MutableStateFlow(LocalDate.now())
+	val anchor = _anchor.asStateFlow()
 
 	init {
 		load()
 	}
 
 	fun load() {
-		_state.value = State.Loading
+		_items.value = null
 		viewModelScope.launch {
-			val days = calendarRepository.getUpcoming()
-				.filter { it.localDate != null }
-				.groupBy { it.localDate!! }
-				.toSortedMap()
-				.map { (date, items) ->
-					CalendarDay(
-						date = date,
-						items = items.sortedWith(compareBy({ it.localTime ?: LocalTime.MIN }, { it.title })),
-					)
-				}
+			_items.value = calendarRepository.getUpcoming()
+		}
+	}
 
-			_state.value = if (days.isEmpty()) State.Empty else State.Content(days)
+	fun setView(view: CalendarView) {
+		_view.value = view
+	}
+
+	fun goToday() {
+		_anchor.value = LocalDate.now()
+	}
+
+	fun goPrevious() = shiftAnchor(-1)
+	fun goNext() = shiftAnchor(1)
+
+	private fun shiftAnchor(direction: Int) {
+		val current = _anchor.value
+		_anchor.value = when (_view.value) {
+			CalendarView.DAY -> current.plusDays(direction.toLong())
+			CalendarView.WEEK -> current.plusWeeks(direction.toLong())
+			CalendarView.MONTH -> current.plusMonths(direction.toLong())
+			CalendarView.AGENDA -> current
 		}
 	}
 }

@@ -15,7 +15,7 @@ import java.time.Instant
  * authenticated [ApiClient] (same plugin and auth as the Jellyseerr integration).
  */
 interface CalendarRepository {
-	/** Upcoming releases for the default window (today .. +90 days). Empty on failure. */
+	/** Releases for a window around now (−14 .. +180 days) covering the calendar views. Empty on failure. */
 	suspend fun getUpcoming(): List<CalendarItem>
 }
 
@@ -31,11 +31,12 @@ class CalendarRepositoryImpl(
 	override suspend fun getUpcoming(): List<CalendarItem> = withContext(Dispatchers.IO) {
 		try {
 			val now = Instant.now()
-			val end = now.plus(Duration.ofDays(90))
+			val start = now.minus(Duration.ofDays(14))
+			val end = now.plus(Duration.ofDays(180))
 			val response = apiClient.request(
 				method = HttpMethod.GET,
 				pathTemplate = "/JellyfinEnhanced/arr/calendar",
-				queryParameters = mapOf("start" to now.toString(), "end" to end.toString()),
+				queryParameters = mapOf("start" to start.toString(), "end" to end.toString()),
 			)
 			// The endpoint returns an envelope: { events: [...], errors: [...] }.
 			json.decodeFromString<CalendarResponse>(response.body.decodeToString())

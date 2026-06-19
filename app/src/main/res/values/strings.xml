@@ -65,6 +65,10 @@
     <string name="calendar_episode">Episode</string>
     <string name="calendar_release">Release</string>
     <string name="calendar_available">Available</string>
+    <string name="calendar_view_day">Day</string>
+    <string name="calendar_view_week">Week</string>
+    <string name="calendar_view_month">Month</string>
+    <string name="calendar_view_agenda">Agenda</string>
 
     <string name="lbl_search">Search</string>
     <string name="msg_not_implemented">" not implemented"</string>
