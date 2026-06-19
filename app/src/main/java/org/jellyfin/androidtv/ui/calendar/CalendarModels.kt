@@ -2,6 +2,7 @@ package org.jellyfin.androidtv.ui.calendar
 
 import kotlinx.serialization.Serializable
 import org.jellyfin.androidtv.R
+import org.jellyfin.sdk.model.serializer.toUUIDOrNull
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -9,6 +10,7 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.util.UUID
 
 /**
  * Envelope returned by `GET /JellyfinEnhanced/arr/calendar`: `{ "events": [...], "errors": [...] }`.
@@ -41,8 +43,17 @@ data class CalendarItem(
 	val episodeNumber: Int? = null,
 	val episodeTitle: String? = null,
 	val instanceName: String? = null,
+	/** Jellyfin item id (series for episodes, movie for movies) once mapped to the library. */
+	val itemId: String? = null,
 ) {
 	val release: CalendarReleaseType get() = CalendarReleaseType.from(releaseType)
+
+	/**
+	 * The Jellyfin item to open when the card is clicked, or null when there is nothing to open.
+	 * Series resolve to the series itself; movies only resolve once they're in the library (i.e.
+	 * already released), so upcoming movies aren't clickable.
+	 */
+	val jellyfinItemId: UUID? get() = itemId?.toUUIDOrNull()
 
 	val sourceLabel: String get() = instanceName?.takeIf { it.isNotBlank() } ?: source
 

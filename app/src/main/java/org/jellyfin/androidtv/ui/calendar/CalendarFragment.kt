@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,10 +51,13 @@ import org.jellyfin.androidtv.ui.base.Text
 import org.jellyfin.androidtv.ui.base.button.Button
 import org.jellyfin.androidtv.ui.base.button.ButtonDefaults
 import org.jellyfin.androidtv.ui.composable.AsyncImage
+import org.jellyfin.androidtv.ui.navigation.Destinations
+import org.jellyfin.androidtv.ui.navigation.NavigationRepository
 import org.jellyfin.androidtv.ui.shared.toolbar.MainToolbar
 import org.jellyfin.androidtv.ui.shared.toolbar.MainToolbarActiveButton
 import org.jellyfin.androidtv.ui.shared.toolbar.rememberMainToolbarFocusRequesters
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -409,6 +413,8 @@ private fun MonthCell(date: LocalDate, items: List<CalendarItem>, inMonth: Boole
 
 @Composable
 private fun EventCard(item: CalendarItem, modifier: Modifier = Modifier) {
+	val navigationRepository = koinInject<NavigationRepository>()
+	val targetId = item.jellyfinItemId
 	var focused by remember { mutableStateOf(false) }
 	val accent = Color(item.release.color)
 	val shape = RoundedCornerShape(10.dp)
@@ -425,7 +431,15 @@ private fun EventCard(item: CalendarItem, modifier: Modifier = Modifier) {
 				color = if (focused) JellyfinTheme.colorScheme.buttonFocused else Color.Transparent,
 				shape = shape,
 			)
-			.focusable(),
+			// Clickable (and focusable) when there is a Jellyfin item to open — series, or movies
+			// already in the library. Otherwise just focusable so D-pad can still scroll past it.
+			.then(
+				if (targetId != null) {
+					Modifier.clickable { navigationRepository.navigate(Destinations.itemDetails(targetId)) }
+				} else {
+					Modifier.focusable()
+				}
+			),
 	) {
 		val backdrop = item.backdropUrl ?: item.posterUrl
 		if (backdrop != null) {
