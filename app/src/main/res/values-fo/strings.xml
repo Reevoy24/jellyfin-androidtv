@@ -1,4 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_all_genres">Øll sløg</string>
+    <string name="jellyseerr_request_row">Tøkt at biðja um</string>
+    <string name="jellyseerr_request_success">Bað um \"%1$s\"</string>
+    <string name="jellyseerr_request_failed">Kundi ikki biðja um \"%1$s\"</string>
+    <string name="jellyseerr_status_available">Tøkt</string>
+    <string name="jellyseerr_status_requested">Umbiðið</string>
+    <string name="jellyseerr_dialog_loading">Innlesur…</string>
+    <string name="jellyseerr_dialog_close">Lat aftur</string>
+    <string name="jellyseerr_dialog_requesting">Biður um…</string>
+    <string name="jellyseerr_dialog_request">Bið um</string>
+    <string name="jellyseerr_dialog_request_series">Bið um røð</string>
+    <string name="jellyseerr_dialog_request_selected">Bið um valt</string>
+    <string name="jellyseerr_dialog_select_all">Vel allar árarøðir</string>
+    <string name="jellyseerr_dialog_season">Árarøð %1$d</string>
+    <string name="jellyseerr_dialog_episodes">%1$d partar</string>
+    <string name="jellyseerr_dialog_no_seasons">Ongar upplýsingar um árarøðir tøkar.</string>
+    <string name="jellyseerr_dialog_already_available">Longu í tínum savni.</string>
+    <string name="jellyseerr_dialog_already_requested">Longu umbiðið.</string>
+    <string name="jellyseerr_dialog_request_movie_hint">Bið um henda film gjøgnum Jellyseerr.</string>
+    <string name="jellyseerr_dialog_request_series_hint">Bið um hesa røð gjøgnum Jellyseerr.</string>
+    <string name="jellyseerr_dialog_advanced">Framkomnar møguleikar</string>
+    <string name="jellyseerr_dialog_server">Málætlanarmaskina</string>
+    <string name="jellyseerr_dialog_quality">Góðskuvanga</string>
+    <string name="jellyseerr_dialog_folder">Rótmappa</string>
+    <string name="jellyseerr_dialog_select_quality">Vel góðsku…</string>
+    <string name="jellyseerr_dialog_select_folder">Vel mappu…</string>
+    <string name="jellyseerr_type_movie">Filmur</string>
+    <string name="jellyseerr_type_series">Røð</string>
+    <string name="lbl_calendar">Kalendari</string>
+    <string name="calendar_empty">Ongar komandi útgávur</string>
+    <string name="calendar_today">Í dag</string>
+    <string name="calendar_tomorrow">Í morgin</string>
+    <string name="calendar_cinema_release">Bíógravisútgáva</string>
+    <string name="calendar_digital_release">Digiтal útgáva</string>
+    <string name="calendar_physical_release">Fysisk útgáva</string>
+    <string name="calendar_episode">Partur</string>
+    <string name="calendar_release">Útgáva</string>
+    <string name="calendar_available">Tøkt</string>
+    <string name="calendar_view_day">Dagur</string>
+    <string name="calendar_view_week">Vika</string>
+    <string name="calendar_view_month">Mánaður</string>
+    <string name="calendar_view_agenda">Skrá</string>
 </resources>

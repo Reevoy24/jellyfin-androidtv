@@ -1,3 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="jellyseerr_request_row">Sorğu üçün əlçatandır</string>
+    <string name="jellyseerr_request_success">\"%1$s\" sorğulandı</string>
+    <string name="jellyseerr_request_failed">\"%1$s\" sorğulanmadı</string>
+    <string name="jellyseerr_status_available">Əlçatandır</string>
+    <string name="jellyseerr_status_requested">Sorğulanıb</string>
+    <string name="jellyseerr_dialog_loading">Yüklənir…</string>
+    <string name="jellyseerr_dialog_close">Bağla</string>
+    <string name="jellyseerr_dialog_requesting">Sorğulanır…</string>
+    <string name="jellyseerr_dialog_request">Sorğu et</string>
+    <string name="jellyseerr_dialog_request_series">Serialı sorğu et</string>
+    <string name="jellyseerr_dialog_request_selected">Seçilənləri sorğu et</string>
+    <string name="jellyseerr_dialog_select_all">Bütün sezonları seç</string>
+    <string name="jellyseerr_dialog_season">Sezon %1$d</string>
+    <string name="jellyseerr_dialog_episodes">%1$d epizod</string>
+    <string name="jellyseerr_dialog_no_seasons">Sezon məlumatı yoxdur.</string>
+    <string name="jellyseerr_dialog_already_available">Artıq kitabxananızdadır.</string>
+    <string name="jellyseerr_dialog_already_requested">Artıq sorğulanıb.</string>
+    <string name="jellyseerr_dialog_request_movie_hint">Bu filmi Jellyseerr vasitəsilə sorğu edin.</string>
+    <string name="jellyseerr_dialog_request_series_hint">Bu serialı Jellyseerr vasitəsilə sorğu edin.</string>
+    <string name="jellyseerr_dialog_advanced">Əlavə seçimlər</string>
+    <string name="jellyseerr_dialog_server">Hədəf server</string>
+    <string name="jellyseerr_dialog_quality">Keyfiyyət profili</string>
+    <string name="jellyseerr_dialog_folder">Kök qovluq</string>
+    <string name="jellyseerr_dialog_select_quality">Keyfiyyət seçin…</string>
+    <string name="jellyseerr_dialog_select_folder">Qovluq seçin…</string>
+    <string name="jellyseerr_type_movie">Film</string>
+    <string name="jellyseerr_type_series">Serial</string>
+    <string name="lbl_calendar">Təqvim</string>
+    <string name="calendar_empty">Qarşıdan gələn buraxılış yoxdur</string>
+    <string name="calendar_today">Bu gün</string>
+    <string name="calendar_tomorrow">Sabah</string>
+    <string name="calendar_cinema_release">Kinoteatr buraxılışı</string>
+    <string name="calendar_digital_release">Rəqəmsal buraxılış</string>
+    <string name="calendar_physical_release">Fiziki buraxılış</string>
+    <string name="calendar_episode">Epizod</string>
+    <string name="calendar_release">Buraxılış</string>
+    <string name="calendar_available">Əlçatandır</string>
+    <string name="calendar_view_day">Gün</string>
+    <string name="calendar_view_week">Həftə</string>
+    <string name="calendar_view_month">Ay</string>
+    <string name="calendar_view_agenda">Gündəlik</string>
 </resources>

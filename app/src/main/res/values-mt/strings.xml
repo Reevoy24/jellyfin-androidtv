@@ -1,4 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_all_genres">Il-ġeneri kollha</string>
+    <string name="jellyseerr_request_row">Disponibbli biex titlob</string>
+    <string name="jellyseerr_request_success">Intalab \"%1$s\"</string>
+    <string name="jellyseerr_request_failed">Ma setax jintalab \"%1$s\"</string>
+    <string name="jellyseerr_status_available">Disponibbli</string>
+    <string name="jellyseerr_status_requested">Mitlub</string>
+    <string name="jellyseerr_dialog_loading">Qed jitgħabba…</string>
+    <string name="jellyseerr_dialog_close">Agħlaq</string>
+    <string name="jellyseerr_dialog_requesting">Qed jintalab…</string>
+    <string name="jellyseerr_dialog_request">Itlob</string>
+    <string name="jellyseerr_dialog_request_series">Itlob is-serje</string>
+    <string name="jellyseerr_dialog_request_selected">Itlob l-għażla</string>
+    <string name="jellyseerr_dialog_select_all">Agħżel l-istaġuni kollha</string>
+    <string name="jellyseerr_dialog_season">Staġun %1$d</string>
+    <string name="jellyseerr_dialog_episodes">%1$d episodji</string>
+    <string name="jellyseerr_dialog_no_seasons">Ebda informazzjoni dwar l-istaġuni mhija disponibbli.</string>
+    <string name="jellyseerr_dialog_already_available">Diġà fil-librerija tiegħek.</string>
+    <string name="jellyseerr_dialog_already_requested">Diġà mitlub.</string>
+    <string name="jellyseerr_dialog_request_movie_hint">Itlob dan il-film permezz ta\' Jellyseerr.</string>
+    <string name="jellyseerr_dialog_request_series_hint">Itlob din is-serje permezz ta\' Jellyseerr.</string>
+    <string name="jellyseerr_dialog_advanced">Għażliet avvanzati</string>
+    <string name="jellyseerr_dialog_server">Server fil-mira</string>
+    <string name="jellyseerr_dialog_quality">Profil tal-kwalità</string>
+    <string name="jellyseerr_dialog_folder">Folder ewlieni</string>
+    <string name="jellyseerr_dialog_select_quality">Agħżel il-kwalità…</string>
+    <string name="jellyseerr_dialog_select_folder">Agħżel folder…</string>
+    <string name="jellyseerr_type_movie">Film</string>
+    <string name="jellyseerr_type_series">Serje</string>
+    <string name="lbl_calendar">Kalendarju</string>
+    <string name="calendar_empty">Ebda ħruġ li ġej</string>
+    <string name="calendar_today">Illum</string>
+    <string name="calendar_tomorrow">Għada</string>
+    <string name="calendar_cinema_release">Ħruġ fiċ-ċinema</string>
+    <string name="calendar_digital_release">Ħruġ diġitali</string>
+    <string name="calendar_physical_release">Ħruġ fiżiku</string>
+    <string name="calendar_episode">Episodju</string>
+    <string name="calendar_release">Ħruġ</string>
+    <string name="calendar_available">Disponibbli</string>
+    <string name="calendar_view_day">Jum</string>
+    <string name="calendar_view_week">Ġimgħa</string>
+    <string name="calendar_view_month">Xahar</string>
+    <string name="calendar_view_agenda">Aġenda</string>
 </resources>
