@@ -181,6 +181,28 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
                 super.onUnbindRowViewHolder(vh);
                 vh.setOnKeyListener(null);
             }
+
+            @Override
+            public void onReappear(RowPresenter.ViewHolder vh) {
+                // Leanback's PlaybackTransportRowPresenter.onReappear() re-focuses the seek bar every
+                // time the controls reappear, so DPAD left/right scrubs the video instead of moving
+                // between the control buttons (subtitles, audio track, ...). Focus the primary controls
+                // row instead so the buttons are reachable with left/right; the seek bar is still one
+                // DPAD-down away for scrubbing.
+                //
+                // controls_dock is an internal leanback id tied to lb_playback_transport_controls_row.xml
+                // (re-verify it exists if androidx.leanback is bumped). findViewById is deliberate: the
+                // clock path above re-parents the dock into a RelativeLayout, so getChildAt() would miss it.
+                // The super.onReappear() fallback (seek bar) is intentional: it also covers the brief
+                // pre-binding window before addMediaActions() populates the dock, when it has no focusable
+                // child yet and requestFocus() returns false -- do not drop the return-value check.
+                View view = vh.view;
+                if (view != null && view.hasFocus()) {
+                    View controls = view.findViewById(androidx.leanback.R.id.controls_dock);
+                    if (controls != null && controls.requestFocus()) return;
+                }
+                super.onReappear(vh);
+            }
         };
         rowPresenter.setDescriptionPresenter(detailsPresenter);
         return rowPresenter;
