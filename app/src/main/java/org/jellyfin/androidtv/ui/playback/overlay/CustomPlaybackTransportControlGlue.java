@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -83,6 +85,9 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
 
     private LinearLayout mButtonRef;
 
+    /** Root view of the transport row (lb_playback_transport_controls_row), for focus management. */
+    private View mRowView;
+
     CustomPlaybackTransportControlGlue(Context context, VideoPlayerAdapter playerAdapter, PlaybackController playbackController) {
         super(context, playerAdapter);
         this.playbackController = playbackController;
@@ -130,6 +135,9 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
             @Override
             protected RowPresenter.ViewHolder createRowViewHolder(ViewGroup parent) {
                 RowPresenter.ViewHolder vh = super.createRowViewHolder(parent);
+
+                mRowView = vh.view;
+                attachSeekBarFocusGuard(vh.view);
 
                 ClockBehavior showClock = KoinJavaComponent.<UserPreferences>get(UserPreferences.class).get(UserPreferences.Companion.getClockBehavior());
 
@@ -184,28 +192,92 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
 
             @Override
             public void onReappear(RowPresenter.ViewHolder vh) {
-                // Leanback's PlaybackTransportRowPresenter.onReappear() re-focuses the seek bar every
-                // time the controls reappear, so DPAD left/right scrubs the video instead of moving
-                // between the control buttons (subtitles, audio track, ...). Focus the primary controls
-                // row instead so the buttons are reachable with left/right; the seek bar is still one
-                // DPAD-down away for scrubbing.
-                //
-                // controls_dock is an internal leanback id tied to lb_playback_transport_controls_row.xml
-                // (re-verify it exists if androidx.leanback is bumped). findViewById is deliberate: the
-                // clock path above re-parents the dock into a RelativeLayout, so getChildAt() would miss it.
-                // The super.onReappear() fallback (seek bar) is intentional: it also covers the brief
-                // pre-binding window before addMediaActions() populates the dock, when it has no focusable
-                // child yet and requestFocus() returns false -- do not drop the return-value check.
-                View view = vh.view;
-                if (view != null && view.hasFocus()) {
-                    View controls = view.findViewById(androidx.leanback.R.id.controls_dock);
-                    if (controls != null && controls.requestFocus()) return;
-                }
-                super.onReappear(vh);
+                // leanback's default focuses the seek bar. Despite the name this does NOT run when the
+                // OSD appears -- it only runs when a hide-fade completes (and via the never-called
+                // resetFocus()) -- but wherever it runs, park focus on the control buttons instead.
+                // See attachSeekBarFocusGuard for why the seek bar must never gain focus automatically.
+                if (vh.view != null && vh.view.hasFocus()) focusPrimaryControls();
             }
         };
         rowPresenter.setDescriptionPresenter(detailsPresenter);
         return rowPresenter;
+    }
+
+    /**
+     * leanback's PlaybackTransportRowView.onRequestFocusInDescendants prefers the seek bar whenever
+     * focus enters the row without an already-focused descendant (playback start, grid focus
+     * recovery after relayouts, the focused button being removed during an action-adapter rebuild,
+     * a popup closing, ...). On the seek bar, DPAD LEFT/RIGHT is consumed unconditionally for
+     * scrubbing -- and once scrubbing, UP/DOWN are swallowed too and the buttons are set GONE -- so
+     * every such automatic grant strands the user where left/right seeks instead of navigating.
+     * Watch for those grants and send focus to the control buttons instead. A deliberate DPAD_DOWN
+     * from the buttons (old focus is an attached descendant of the row) is left alone so the seek
+     * bar stays reachable for scrubbing.
+     * <p>
+     * The referenced ids (controls_dock, playback_progress) are internal leanback ids tied to
+     * lb_playback_transport_controls_row.xml -- re-verify they exist on any androidx.leanback bump.
+     */
+    private void attachSeekBarFocusGuard(final View rowView) {
+        final ViewTreeObserver.OnGlobalFocusChangeListener guard = (oldFocus, newFocus) -> {
+            if (newFocus == null || newFocus.getId() != androidx.leanback.R.id.playback_progress) return;
+            if (!isDescendantOf(newFocus, rowView)) return;
+            // A move from within the row (DPAD_DOWN from the buttons) is deliberate -- allow it.
+            if (oldFocus != null && oldFocus.isAttachedToWindow() && isDescendantOf(oldFocus, rowView)) return;
+            focusPrimaryControls();
+        };
+        rowView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                v.getViewTreeObserver().addOnGlobalFocusChangeListener(guard);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                v.getViewTreeObserver().removeOnGlobalFocusChangeListener(guard);
+            }
+        });
+    }
+
+    /**
+     * Focus the primary control buttons (play/pause is the first child, so it becomes the landing
+     * spot). If the dock momentarily has no focusable children -- during an action-adapter rebuild
+     * or playback startup before addMediaActions() -- retry after the current frame instead of
+     * letting focus strand on the seek bar.
+     */
+    void focusPrimaryControls() {
+        final View rowView = mRowView;
+        if (rowView == null) return;
+        View dock = rowView.findViewById(androidx.leanback.R.id.controls_dock);
+        if (dock != null && dock.requestFocus()) return;
+        rowView.post(() -> {
+            View focused = rowView.findFocus();
+            if (focused == null || focused.getId() != androidx.leanback.R.id.playback_progress) return;
+            View retryDock = rowView.findViewById(androidx.leanback.R.id.controls_dock);
+            if (retryDock != null) retryDock.requestFocus();
+        });
+    }
+
+    /**
+     * Redirect focus to the control buttons if it currently sits on the seek bar. Called when the
+     * OSD is shown: onReappear does NOT run at show time, so focus retained on the seek bar from an
+     * earlier hide/scrub would otherwise make the first DPAD LEFT/RIGHT presses scrub the video.
+     * Never steals focus from anything else (popups, the guide, the buttons themselves).
+     */
+    public void focusPrimaryControlsIfOnSeekBar() {
+        View rowView = mRowView;
+        if (rowView == null) return;
+        View focused = rowView.findFocus();
+        if (focused == null || focused.getId() != androidx.leanback.R.id.playback_progress) return;
+        focusPrimaryControls();
+    }
+
+    private static boolean isDescendantOf(View view, View ancestor) {
+        ViewParent parent = view.getParent();
+        while (parent != null) {
+            if (parent == ancestor) return true;
+            parent = parent.getParent();
+        }
+        return false;
     }
 
     private void initActions(Context context) {
@@ -305,6 +377,11 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
         }
 
         secondaryActionsAdapter.add(zoomAction);
+
+        // Clearing the adapters above removes the focused button, which makes leanback descend to
+        // the seek bar (see attachSeekBarFocusGuard). Repair synchronously now that buttons exist
+        // again -- this runs after every subtitle/audio/quality change and at playback startup.
+        focusPrimaryControlsIfOnSeekBar();
     }
 
     @Override

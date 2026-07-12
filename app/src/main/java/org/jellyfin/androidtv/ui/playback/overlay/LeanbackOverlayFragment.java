@@ -64,6 +64,10 @@ public class LeanbackOverlayFragment extends PlaybackSupportFragment {
         if (shouldShowOverlay) {
             super.showControlsOverlay(runAnimation);
             playerAdapter.getMasterOverlayFragment().show();
+            // Focus retained on the seek bar from before the OSD was hidden would make the next
+            // DPAD LEFT/RIGHT presses scrub instead of navigate -- land on the buttons instead
+            // (onReappear does not run at show time; it only runs when a hide-fade completes).
+            if (playerGlue != null) playerGlue.focusPrimaryControlsIfOnSeekBar();
         }
     }
 
