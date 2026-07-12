@@ -41,7 +41,6 @@
     <string name="calendar_view_week">Həftə</string>
     <string name="calendar_view_month">Ay</string>
     <string name="calendar_view_agenda">Gündəlik</string>
-</resources>
     <string name="video_error_unknown_error">Videonu yükləmək mümkün olmadı</string>
     <string name="loading">Yüklənir…</string>
     <string name="btn_cancel">Ləğv et</string>
