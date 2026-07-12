@@ -705,4 +705,5 @@
     <string name="calendar_view_week">Тыдзень</string>
     <string name="calendar_view_month">Месяц</string>
     <string name="calendar_view_agenda">Парадак дня</string>
+    <string name="preference_enable_ass_description">Эксперыментальная функцыя, можа працаваць ненадзейна</string>
 </resources>
