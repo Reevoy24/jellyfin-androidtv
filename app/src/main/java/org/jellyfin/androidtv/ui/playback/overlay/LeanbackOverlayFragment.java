@@ -62,12 +62,18 @@ public class LeanbackOverlayFragment extends PlaybackSupportFragment {
     @Override
     public void showControlsOverlay(boolean runAnimation) {
         if (shouldShowOverlay) {
+            // leanback's onInterceptInputEvent calls tickle() -> showControlsOverlay(true) on EVERY
+            // DPAD key-down, even while the overlay is already visible and even when the key was
+            // consumed. The focus repair below must therefore only run on the actual hidden->shown
+            // transition -- otherwise it undoes the deliberate DPAD_DOWN seek-bar entry
+            // (tryEnterSeekBar) within the very same key event.
+            boolean wasVisible = isControlsOverlayVisible();
             super.showControlsOverlay(runAnimation);
             playerAdapter.getMasterOverlayFragment().show();
             // Focus retained on the seek bar from before the OSD was hidden would make the next
             // DPAD LEFT/RIGHT presses scrub instead of navigate -- land on the buttons instead
             // (onReappear does not run at show time; it only runs when a hide-fade completes).
-            if (playerGlue != null) playerGlue.focusPrimaryControlsIfOnSeekBar();
+            if (!wasVisible && playerGlue != null) playerGlue.focusPrimaryControlsIfOnSeekBar();
         }
     }
 
