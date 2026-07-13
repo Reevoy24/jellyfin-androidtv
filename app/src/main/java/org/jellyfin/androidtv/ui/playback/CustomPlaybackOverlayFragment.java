@@ -572,6 +572,18 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
                         }
                     }
 
+                    // Deliberate scrub entry: the seek bar is kept non-focusable so no automatic
+                    // focus grant can strand the user on it (see CustomPlaybackTransportControlGlue).
+                    // DPAD_DOWN from the primary control buttons is the one gesture that enables and
+                    // focuses it; tryEnterSeekBar itself verifies the current focus position.
+                    if (mIsVisible && keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                            && leanbackOverlayFragment != null
+                            && leanbackOverlayFragment.getPlayerGlue() != null
+                            && leanbackOverlayFragment.getPlayerGlue().tryEnterSeekBar()) {
+                        if (mFadeEnabled) startFadeTimer();
+                        return true;
+                    }
+
                     // Control fast forward and rewind if overlay hidden and not showing live TV
                     if (!playbackControllerContainer.getValue().getPlaybackController().isLiveTv()) {
                         if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD || keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_BUTTON_R2) {

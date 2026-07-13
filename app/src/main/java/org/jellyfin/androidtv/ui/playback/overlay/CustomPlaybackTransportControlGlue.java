@@ -137,6 +137,18 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
                 RowPresenter.ViewHolder vh = super.createRowViewHolder(parent);
 
                 mRowView = vh.view;
+
+                // The seek bar is a focus trap: leanback prefers it on every automatic focus grant
+                // and its key listener consumes DPAD LEFT/RIGHT unconditionally (scrubs instead of
+                // navigating). Make it non-focusable so NO code path -- known or unknown -- can ever
+                // land focus there automatically; leanback's own focus routing checks isFocusable()
+                // and cleanly skips it, so the buttons become the natural landing spot everywhere.
+                // Scrubbing stays available through the one deliberate gesture: DPAD_DOWN from the
+                // primary buttons calls tryEnterSeekBar(), which re-enables focusability for the
+                // duration of the visit (disabled again when focus leaves, see the focus guard).
+                View seekBar = vh.view.findViewById(androidx.leanback.R.id.playback_progress);
+                if (seekBar != null) seekBar.setFocusable(false);
+
                 attachSeekBarFocusGuard(vh.view);
 
                 ClockBehavior showClock = KoinJavaComponent.<UserPreferences>get(UserPreferences.class).get(UserPreferences.Companion.getClockBehavior());
@@ -219,9 +231,16 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
      */
     private void attachSeekBarFocusGuard(final View rowView) {
         final ViewTreeObserver.OnGlobalFocusChangeListener guard = (oldFocus, newFocus) -> {
+            // End of a deliberate seek-bar visit (see tryEnterSeekBar): focus moved off the seek
+            // bar, lock it again so it can't be a target for automatic focus grants.
+            if (oldFocus != null && oldFocus.getId() == androidx.leanback.R.id.playback_progress
+                    && isDescendantOf(oldFocus, rowView) && oldFocus != newFocus) {
+                oldFocus.setFocusable(false);
+            }
+
             if (newFocus == null || newFocus.getId() != androidx.leanback.R.id.playback_progress) return;
             if (!isDescendantOf(newFocus, rowView)) return;
-            // A move from within the row (DPAD_DOWN from the buttons) is deliberate -- allow it.
+            // A move from within the row (the deliberate tryEnterSeekBar entry) is allowed.
             if (oldFocus != null && oldFocus.isAttachedToWindow() && isDescendantOf(oldFocus, rowView)) return;
             focusPrimaryControls();
         };
@@ -258,17 +277,46 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
     }
 
     /**
-     * Redirect focus to the control buttons if it currently sits on the seek bar. Called when the
-     * OSD is shown: onReappear does NOT run at show time, so focus retained on the seek bar from an
-     * earlier hide/scrub would otherwise make the first DPAD LEFT/RIGHT presses scrub the video.
-     * Never steals focus from anything else (popups, the guide, the buttons themselves).
+     * Redirect focus to the control buttons when it is stranded somewhere unhelpful: on the seek
+     * bar (retained from an earlier hide/scrub -- onReappear does NOT run at show time), or on a
+     * bare ancestor container (the leanback grid keeps focus itself when the dock had no focusable
+     * children yet during startup, since the seek bar is non-focusable). Called when the OSD is
+     * shown and after every action-adapter rebuild. Never steals focus from sibling UI (popups,
+     * the guide, the top panel): those are not ancestors of the transport row.
      */
     public void focusPrimaryControlsIfOnSeekBar() {
         View rowView = mRowView;
         if (rowView == null) return;
+        View focused = rowView.getRootView().findFocus();
+        if (focused == null) return;
+        boolean onSeekBar = focused.getId() == androidx.leanback.R.id.playback_progress
+                && isDescendantOf(focused, rowView);
+        boolean onBareContainer = isDescendantOf(rowView, focused);
+        if (onSeekBar || onBareContainer) focusPrimaryControls();
+    }
+
+    /**
+     * The one deliberate way onto the (otherwise non-focusable, see createRowViewHolder) seek bar:
+     * called for DPAD_DOWN while the OSD is visible. Only acts when focus is currently on one of
+     * the primary control buttons and the player can seek; re-enables the seek bar's focusability
+     * and moves focus there so leanback's scrub mode (LEFT/RIGHT step, OK commit, BACK cancel)
+     * works as designed. The focus guard locks the bar again as soon as focus leaves it.
+     *
+     * @return true when the seek bar took focus (the key event is consumed by the caller)
+     */
+    public boolean tryEnterSeekBar() {
+        View rowView = mRowView;
+        if (rowView == null) return false;
+        View seekBar = rowView.findViewById(androidx.leanback.R.id.playback_progress);
+        View dock = rowView.findViewById(androidx.leanback.R.id.controls_dock);
+        if (seekBar == null || dock == null) return false;
         View focused = rowView.findFocus();
-        if (focused == null || focused.getId() != androidx.leanback.R.id.playback_progress) return;
-        focusPrimaryControls();
+        if (focused == null || !isDescendantOf(focused, dock)) return false;
+        if (!getPlayerAdapter().canSeek()) return false;
+        seekBar.setFocusable(true);
+        if (seekBar.requestFocus()) return true;
+        seekBar.setFocusable(false);
+        return false;
     }
 
     private static boolean isDescendantOf(View view, View ancestor) {
