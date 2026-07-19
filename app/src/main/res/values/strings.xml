@@ -232,6 +232,13 @@
     <string name="desc_bitstream_ac3">Requires capable hardware</string>
     <string name="desc_audio_night_mode">Levels out audio volume automatically</string>
     <string name="lbl_zoom">Zoom</string>
+    <string name="lbl_stereo_3d">3D mode</string>
+    <string name="stereo_3d_off">Off</string>
+    <string name="stereo_3d_sbs">Side by side</string>
+    <string name="stereo_3d_sbs_swapped">Side by side (eyes swapped)</string>
+    <string name="stereo_3d_tab">Top-bottom</string>
+    <string name="stereo_3d_tab_swapped">Top-bottom (eyes swapped)</string>
+    <string name="stereo_3d_active_hint">3D active – disable TV overscan (1:1 pixel mapping) and use polarized glasses</string>
     <string name="playback_info">Playback info</string>
     <string name="playback_info_play_method">Play method: %1$s</string>
     <string name="playback_info_direct_play">Directplay</string>

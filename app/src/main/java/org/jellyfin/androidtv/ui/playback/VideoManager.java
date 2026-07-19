@@ -10,6 +10,8 @@ import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -87,6 +89,11 @@ public class VideoManager {
     private long mMetaDuration = -1;
     private long lastExoPlayerPosition = -1;
     private boolean nightModeEnabled;
+
+    // 3D row-interleave output for passive (polarized) TVs; applied on the next prepare()
+    private StereoFormat mStereoFormat = StereoFormat.NONE;
+    private boolean mStereoSwapEyes = false;
+    private boolean mStereoEffectsApplied = false;
 
     public boolean isContracted = false;
 
@@ -386,6 +393,53 @@ public class VideoManager {
         return flags;
     }
 
+    public StereoFormat getStereoFormat() {
+        return mStereoFormat;
+    }
+
+    public boolean getStereoSwapEyes() {
+        return mStereoSwapEyes;
+    }
+
+    /**
+     * Select the 3D row-interleave output mode. Takes effect on the next {@link #setMediaStreamInfo}
+     * (video effects can only be installed while the video renderer is disabled), so callers should
+     * restart the stream when changing this mid-playback.
+     */
+    public void setStereoFormat(StereoFormat format, boolean swapEyes) {
+        mStereoFormat = format == null ? StereoFormat.NONE : format;
+        mStereoSwapEyes = swapEyes;
+    }
+
+    private void applyStereoOutput() {
+        if (mExoPlayer == null || mExoPlayerView == null) return;
+        View surfaceView = mExoPlayerView.getVideoSurfaceView();
+
+        if (mStereoFormat == StereoFormat.NONE) {
+            if (mStereoEffectsApplied) {
+                mExoPlayer.setVideoEffects(Collections.emptyList());
+                mStereoEffectsApplied = false;
+            }
+            if (surfaceView instanceof SurfaceView)
+                ((SurfaceView) surfaceView).getHolder().setSizeFromLayout();
+            return;
+        }
+
+        // The interleave pattern must be generated at the panel's native resolution: on a 4K
+        // passive panel the polarization alternates per 2160p row, so a 1080p surface that the
+        // device upscales would mix the eyes. Force the surface buffer to the display mode size
+        // and render the effect at exactly that size (1:1, no later scaling).
+        Display.Mode mode = mActivity.getWindowManager().getDefaultDisplay().getMode();
+        int width = mode.getPhysicalWidth();
+        int height = mode.getPhysicalHeight();
+        Timber.i("Enabling 3D row-interleave output (%s, swap=%b) at %dx%d", mStereoFormat, mStereoSwapEyes, width, height);
+        if (surfaceView instanceof SurfaceView)
+            ((SurfaceView) surfaceView).getHolder().setFixedSize(width, height);
+        mExoPlayer.setVideoEffects(Collections.singletonList(
+                new StereoInterleaveEffect(mStereoFormat, mStereoSwapEyes, width, height)));
+        mStereoEffectsApplied = true;
+    }
+
     public void setMediaStreamInfo(ApiClient api, StreamInfo streamInfo) {
         String path = streamInfo.getMediaUrl();
         if (path == null) {
@@ -393,6 +447,8 @@ public class VideoManager {
             return;
         }
         Timber.i("Video path set to: %s", path);
+
+        applyStereoOutput();
 
         try {
             // Add external subtitles
