@@ -16,9 +16,3 @@
 -keepclassmembers class org.jellyfin.androidtv.** extends androidx.fragment.app.Fragment {
     public <init>();
 }
-
-# media3-effect: ExoPlayer.setVideoEffects() instantiates the frame processor factory via
-# reflection (Class.forName on the original class name) — R8 renaming breaks it silently.
--keep class androidx.media3.effect.DefaultVideoFrameProcessor { *; }
--keep class androidx.media3.effect.DefaultVideoFrameProcessor$Factory { *; }
--keep class androidx.media3.effect.DefaultVideoFrameProcessor$Factory$Builder { *; }

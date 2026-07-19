@@ -10,8 +10,6 @@ import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.TypedValue;
-import android.view.Display;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -89,11 +87,6 @@ public class VideoManager {
     private long mMetaDuration = -1;
     private long lastExoPlayerPosition = -1;
     private boolean nightModeEnabled;
-
-    // 3D row-interleave output for passive (polarized) TVs; applied on the next prepare()
-    private StereoFormat mStereoFormat = StereoFormat.NONE;
-    private boolean mStereoSwapEyes = false;
-    private boolean mStereoEffectsApplied = false;
 
     public boolean isContracted = false;
 
@@ -393,71 +386,6 @@ public class VideoManager {
         return flags;
     }
 
-    public StereoFormat getStereoFormat() {
-        return mStereoFormat;
-    }
-
-    public boolean getStereoSwapEyes() {
-        return mStereoSwapEyes;
-    }
-
-    /**
-     * Select the 3D row-interleave output mode. Takes effect on the next {@link #setMediaStreamInfo}
-     * (video effects can only be installed while the video renderer is disabled), so callers should
-     * restart the stream when changing this mid-playback.
-     */
-    public void setStereoFormat(StereoFormat format, boolean swapEyes) {
-        mStereoFormat = format == null ? StereoFormat.NONE : format;
-        mStereoSwapEyes = swapEyes;
-    }
-
-    private void applyStereoOutput() {
-        if (mExoPlayer == null || mExoPlayerView == null) return;
-
-        if (mStereoFormat == StereoFormat.NONE) {
-            // Leave the pipeline completely untouched unless a previous stream actually used the
-            // effect -- normal playback must be identical to a build without the 3D feature.
-            if (!mStereoEffectsApplied) return;
-            View surfaceView = mExoPlayerView.getVideoSurfaceView();
-            try {
-                mExoPlayer.setVideoEffects(Collections.emptyList());
-            } catch (Exception e) {
-                Timber.e(e, "Unable to clear video effects");
-            }
-            if (surfaceView instanceof SurfaceView)
-                ((SurfaceView) surfaceView).getHolder().setSizeFromLayout();
-            mStereoEffectsApplied = false;
-            return;
-        }
-
-        // The interleave pattern must be generated with the panel's native ROW count: on a 4K
-        // passive panel the polarization alternates per 2160p row, so a 1080p surface that the
-        // device upscales would mix the eyes. The horizontal direction is irrelevant for the
-        // polarization and gets stretched by the display scaler for free, so cap the buffer width
-        // at 1920 -- that halves the per-frame GPU load on weak TV-stick GPUs (a full 3840x2160
-        // shader pass is what dropped playback to ~10 fps) while a 1080p half-SBS source only has
-        // 960px per eye anyway.
-        try {
-            View surfaceView = mExoPlayerView.getVideoSurfaceView();
-            Display.Mode mode = mActivity.getWindowManager().getDefaultDisplay().getMode();
-            int displayWidth = mode.getPhysicalWidth();
-            int height = mode.getPhysicalHeight();
-            float displayAspect = displayWidth / (float) height;
-            int width = Math.min(displayWidth, 1920);
-            Timber.i("Enabling 3D row-interleave output (%s, swap=%b) at %dx%d for a %dx%d display",
-                    mStereoFormat, mStereoSwapEyes, width, height, displayWidth, mode.getPhysicalHeight());
-            if (surfaceView instanceof SurfaceView)
-                ((SurfaceView) surfaceView).getHolder().setFixedSize(width, height);
-            mExoPlayer.setVideoEffects(Collections.singletonList(
-                    new StereoInterleaveEffect(mStereoFormat, mStereoSwapEyes, width, height, displayAspect)));
-            mStereoEffectsApplied = true;
-        } catch (Exception e) {
-            // Missing effect module, GL failure, ... -- never let 3D break playback entirely
-            Timber.e(e, "Unable to enable 3D output, falling back to 2D");
-            mStereoFormat = StereoFormat.NONE;
-        }
-    }
-
     public void setMediaStreamInfo(ApiClient api, StreamInfo streamInfo) {
         String path = streamInfo.getMediaUrl();
         if (path == null) {
@@ -465,8 +393,6 @@ public class VideoManager {
             return;
         }
         Timber.i("Video path set to: %s", path);
-
-        applyStereoOutput();
 
         try {
             // Add external subtitles

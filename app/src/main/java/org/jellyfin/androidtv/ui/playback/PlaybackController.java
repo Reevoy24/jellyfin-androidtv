@@ -50,7 +50,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.UUID;
 
 import kotlin.Lazy;
 import timber.log.Timber;
@@ -125,25 +124,6 @@ public class PlaybackController implements PlaybackControllerNotifiable {
 
     private Display.Mode[] mDisplayModes;
     private RefreshRateSwitchingBehavior refreshRateSwitchingBehavior = RefreshRateSwitchingBehavior.DISABLED;
-
-    // Item the user manually picked a 3D output mode for (protects the choice from metadata auto-detect)
-    private UUID mStereoManualItemId = null;
-
-    private static StereoFormat stereoFormatFromMetadata(org.jellyfin.sdk.model.api.Video3dFormat video3dFormat) {
-        if (video3dFormat == null) return StereoFormat.NONE;
-        switch (video3dFormat) {
-            case HALF_SIDE_BY_SIDE:
-                return StereoFormat.SBS_HALF;
-            case FULL_SIDE_BY_SIDE:
-                return StereoFormat.SBS_FULL;
-            case HALF_TOP_AND_BOTTOM:
-                return StereoFormat.TAB_HALF;
-            case FULL_TOP_AND_BOTTOM:
-                return StereoFormat.TAB_FULL;
-            default: // MVC and unknown formats can't be rendered as row-interleave
-                return StereoFormat.NONE;
-        }
-    }
 
     public PlaybackController(List<BaseItemDto> items, CustomPlaybackOverlayFragment fragment) {
         this(items, fragment, 0);
@@ -273,51 +253,7 @@ public class PlaybackController implements PlaybackControllerNotifiable {
         return mPlaybackState == PlaybackState.PLAYING && hasInitializedVideoManager() && mVideoManager.isPlaying();
     }
 
-    public StereoFormat getStereoFormat() {
-        return hasInitializedVideoManager() ? mVideoManager.getStereoFormat() : StereoFormat.NONE;
-    }
-
-    public boolean getStereoSwapEyes() {
-        return hasInitializedVideoManager() && mVideoManager.getStereoSwapEyes();
-    }
-
-    /**
-     * Select the 3D row-interleave output for passive (polarized) TVs. Video effects can only be
-     * installed while the player is being prepared, so a change during playback restarts the
-     * stream at the current position.
-     */
-    public void setStereoFormat(StereoFormat format, boolean swapEyes) {
-        if (!hasInitializedVideoManager()) return;
-        if (mVideoManager.getStereoFormat() == format && mVideoManager.getStereoSwapEyes() == swapEyes) return;
-
-        // remember the manual choice so item metadata doesn't override it on the restart
-        BaseItemDto currentItem = getCurrentlyPlayingItem();
-        mStereoManualItemId = currentItem != null ? currentItem.getId() : null;
-
-        mVideoManager.setStereoFormat(format, swapEyes);
-
-        if (mPlaybackState == PlaybackState.PLAYING || mPlaybackState == PlaybackState.PAUSED) {
-            refreshCurrentPosition();
-            long position = mCurrentPosition;
-            stop();
-            play(position);
-        }
-    }
-
     public void playerErrorEncountered() {
-        // If the 3D output pipeline is active it may be what broke playback (GL, tunneled or
-        // secure decoders and some codec paths don't support video effects, and such failures
-        // surface as async player errors). Drop to 2D before retrying so the retry has a chance
-        // and an incompatible device never ends up in a 3D crash loop.
-        if (hasInitializedVideoManager() && mVideoManager.getStereoFormat() != StereoFormat.NONE) {
-            Timber.w("Playback error with 3D output active - disabling 3D and retrying in 2D");
-            mVideoManager.setStereoFormat(StereoFormat.NONE, false);
-            BaseItemDto errorItem = getCurrentlyPlayingItem();
-            mStereoManualItemId = errorItem != null ? errorItem.getId() : null; // block metadata auto re-enable on the retry
-            if (mFragment != null)
-                Utils.showToast(mFragment.getContext(), mFragment.getString(R.string.stereo_3d_disabled_after_error));
-        }
-
         // reset the retry count if it's been more than 30s since previous error
         if (playbackRetries > 0 && Instant.now().toEpochMilli() - lastPlaybackError > 30000) {
             Timber.i("playback stabilized - retry count reset to 0 from %s", playbackRetries);
@@ -742,17 +678,6 @@ public class PlaybackController implements PlaybackControllerNotifiable {
         // set playback speed to user selection, or 1 if we're watching live-tv
         if (mVideoManager != null)
             mVideoManager.setPlaybackSpeed(isLiveTv() ? 1.0f : mRequestedPlaybackSpeed);
-
-        // 3D: preset the row-interleave output from the item's 3D metadata (filename tags like
-        // ".3D.HSBS." set video3dFormat server-side), unless the user chose a mode manually for
-        // this item via the player's 3D button.
-        if (mVideoManager != null && (item.getId() == null || !item.getId().equals(mStereoManualItemId))) {
-            StereoFormat autoFormat = stereoFormatFromMetadata(item.getVideo3dFormat());
-            if (autoFormat != mVideoManager.getStereoFormat() && mFragment != null && autoFormat != StereoFormat.NONE) {
-                Utils.showToast(mFragment.getContext(), mFragment.getString(R.string.stereo_3d_active_hint));
-            }
-            mVideoManager.setStereoFormat(autoFormat, false);
-        }
 
         if (mFragment != null) mFragment.updateDisplay();
 
