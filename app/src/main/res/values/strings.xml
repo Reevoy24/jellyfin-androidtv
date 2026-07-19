@@ -238,6 +238,7 @@
     <string name="stereo_3d_sbs_swapped">Side by side (eyes swapped)</string>
     <string name="stereo_3d_tab">Top-bottom</string>
     <string name="stereo_3d_tab_swapped">Top-bottom (eyes swapped)</string>
+    <string name="stereo_3d_disabled_after_error">3D disabled (playback error) – retrying in 2D</string>
     <string name="stereo_3d_active_hint">3D active – disable TV overscan (1:1 pixel mapping) and use polarized glasses</string>
     <string name="playback_info">Playback info</string>
     <string name="playback_info_play_method">Play method: %1$s</string>

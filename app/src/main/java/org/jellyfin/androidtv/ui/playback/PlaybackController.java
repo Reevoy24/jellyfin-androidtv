@@ -305,6 +305,19 @@ public class PlaybackController implements PlaybackControllerNotifiable {
     }
 
     public void playerErrorEncountered() {
+        // If the 3D output pipeline is active it may be what broke playback (GL, tunneled or
+        // secure decoders and some codec paths don't support video effects, and such failures
+        // surface as async player errors). Drop to 2D before retrying so the retry has a chance
+        // and an incompatible device never ends up in a 3D crash loop.
+        if (hasInitializedVideoManager() && mVideoManager.getStereoFormat() != StereoFormat.NONE) {
+            Timber.w("Playback error with 3D output active - disabling 3D and retrying in 2D");
+            mVideoManager.setStereoFormat(StereoFormat.NONE, false);
+            BaseItemDto errorItem = getCurrentlyPlayingItem();
+            mStereoManualItemId = errorItem != null ? errorItem.getId() : null; // block metadata auto re-enable on the retry
+            if (mFragment != null)
+                Utils.showToast(mFragment.getContext(), mFragment.getString(R.string.stereo_3d_disabled_after_error));
+        }
+
         // reset the retry count if it's been more than 30s since previous error
         if (playbackRetries > 0 && Instant.now().toEpochMilli() - lastPlaybackError > 30000) {
             Timber.i("playback stabilized - retry count reset to 0 from %s", playbackRetries);

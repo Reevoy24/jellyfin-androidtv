@@ -413,31 +413,49 @@ public class VideoManager {
 
     private void applyStereoOutput() {
         if (mExoPlayer == null || mExoPlayerView == null) return;
-        View surfaceView = mExoPlayerView.getVideoSurfaceView();
 
         if (mStereoFormat == StereoFormat.NONE) {
-            if (mStereoEffectsApplied) {
+            // Leave the pipeline completely untouched unless a previous stream actually used the
+            // effect -- normal playback must be identical to a build without the 3D feature.
+            if (!mStereoEffectsApplied) return;
+            View surfaceView = mExoPlayerView.getVideoSurfaceView();
+            try {
                 mExoPlayer.setVideoEffects(Collections.emptyList());
-                mStereoEffectsApplied = false;
+            } catch (Exception e) {
+                Timber.e(e, "Unable to clear video effects");
             }
             if (surfaceView instanceof SurfaceView)
                 ((SurfaceView) surfaceView).getHolder().setSizeFromLayout();
+            mStereoEffectsApplied = false;
             return;
         }
 
-        // The interleave pattern must be generated at the panel's native resolution: on a 4K
+        // The interleave pattern must be generated with the panel's native ROW count: on a 4K
         // passive panel the polarization alternates per 2160p row, so a 1080p surface that the
-        // device upscales would mix the eyes. Force the surface buffer to the display mode size
-        // and render the effect at exactly that size (1:1, no later scaling).
-        Display.Mode mode = mActivity.getWindowManager().getDefaultDisplay().getMode();
-        int width = mode.getPhysicalWidth();
-        int height = mode.getPhysicalHeight();
-        Timber.i("Enabling 3D row-interleave output (%s, swap=%b) at %dx%d", mStereoFormat, mStereoSwapEyes, width, height);
-        if (surfaceView instanceof SurfaceView)
-            ((SurfaceView) surfaceView).getHolder().setFixedSize(width, height);
-        mExoPlayer.setVideoEffects(Collections.singletonList(
-                new StereoInterleaveEffect(mStereoFormat, mStereoSwapEyes, width, height)));
-        mStereoEffectsApplied = true;
+        // device upscales would mix the eyes. The horizontal direction is irrelevant for the
+        // polarization and gets stretched by the display scaler for free, so cap the buffer width
+        // at 1920 -- that halves the per-frame GPU load on weak TV-stick GPUs (a full 3840x2160
+        // shader pass is what dropped playback to ~10 fps) while a 1080p half-SBS source only has
+        // 960px per eye anyway.
+        try {
+            View surfaceView = mExoPlayerView.getVideoSurfaceView();
+            Display.Mode mode = mActivity.getWindowManager().getDefaultDisplay().getMode();
+            int displayWidth = mode.getPhysicalWidth();
+            int height = mode.getPhysicalHeight();
+            float displayAspect = displayWidth / (float) height;
+            int width = Math.min(displayWidth, 1920);
+            Timber.i("Enabling 3D row-interleave output (%s, swap=%b) at %dx%d for a %dx%d display",
+                    mStereoFormat, mStereoSwapEyes, width, height, displayWidth, mode.getPhysicalHeight());
+            if (surfaceView instanceof SurfaceView)
+                ((SurfaceView) surfaceView).getHolder().setFixedSize(width, height);
+            mExoPlayer.setVideoEffects(Collections.singletonList(
+                    new StereoInterleaveEffect(mStereoFormat, mStereoSwapEyes, width, height, displayAspect)));
+            mStereoEffectsApplied = true;
+        } catch (Exception e) {
+            // Missing effect module, GL failure, ... -- never let 3D break playback entirely
+            Timber.e(e, "Unable to enable 3D output, falling back to 2D");
+            mStereoFormat = StereoFormat.NONE;
+        }
     }
 
     public void setMediaStreamInfo(ApiClient api, StreamInfo streamInfo) {

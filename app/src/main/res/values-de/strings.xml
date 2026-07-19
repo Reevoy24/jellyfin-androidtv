@@ -165,6 +165,7 @@
     <string name="stereo_3d_sbs_swapped">Side by Side (Augen vertauscht)</string>
     <string name="stereo_3d_tab">Oben-Unten</string>
     <string name="stereo_3d_tab_swapped">Oben-Unten (Augen vertauscht)</string>
+    <string name="stereo_3d_disabled_after_error">3D deaktiviert (Wiedergabefehler) – neuer Versuch in 2D</string>
     <string name="stereo_3d_active_hint">3D aktiv – am TV den Overscan („16:9 Overscan“) ausschalten und Polarisationsbrille nutzen</string>
     <string name="btn_got_it">Verstanden</string>
     <string name="lbl_clear_queue">Warteschlange leeren</string>
