@@ -581,4 +581,6 @@
     <string name="calendar_view_week">Minggu</string>
     <string name="calendar_view_month">Bulan</string>
     <string name="calendar_view_agenda">Agenda</string>
+    <string name="playback_info_resolution">Resolusi</string>
+    <string name="playback_info_video_range">Jangkauan video:%1$s</string>
 </resources>

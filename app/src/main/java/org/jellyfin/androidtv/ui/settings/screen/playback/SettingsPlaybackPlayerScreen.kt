@@ -24,6 +24,7 @@ import org.jellyfin.androidtv.ui.base.list.ListButton
 import org.jellyfin.androidtv.ui.base.list.ListMessage
 import org.jellyfin.androidtv.ui.base.list.ListSection
 import org.jellyfin.androidtv.ui.navigation.LocalRouter
+import org.jellyfin.androidtv.ui.navigation.focus.focusKey
 import org.jellyfin.androidtv.ui.settings.compat.rememberPreference
 import org.jellyfin.androidtv.ui.settings.composable.SettingsColumn
 import org.jellyfin.androidtv.util.componentName
@@ -69,7 +70,9 @@ fun SettingsPlaybackPlayerScreen() {
 					playbackRewriteVideoEnabled = false
 					externalAppRepository.setExternalPlayerapp(null)
 					router.back()
-				}
+				},
+				modifier = Modifier
+					.focusKey("player_internal", initialFocus = currentExternalPlayer == null && !playbackRewriteVideoEnabled)
 			)
 		}
 
@@ -91,7 +94,9 @@ fun SettingsPlaybackPlayerScreen() {
 					playbackRewriteVideoEnabled = true
 					externalAppRepository.setExternalPlayerapp(null)
 					router.back()
-				}
+				},
+				modifier = Modifier
+					.focusKey("player_new", initialFocus = currentExternalPlayer == null && playbackRewriteVideoEnabled)
 			)
 		}
 
@@ -125,7 +130,12 @@ fun SettingsPlaybackPlayerScreen() {
 				onClick = {
 					externalAppRepository.setExternalPlayerapp(app.activityInfo)
 					router.back()
-				}
+				},
+				modifier = Modifier
+					.focusKey(
+						key = "player_external_${app.activityInfo.componentName}",
+						initialFocus = currentExternalPlayer?.componentName == app.activityInfo.componentName,
+					)
 			)
 		}
 	}

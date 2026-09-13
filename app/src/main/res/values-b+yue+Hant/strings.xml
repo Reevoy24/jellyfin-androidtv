@@ -492,7 +492,7 @@
     <string name="indicator_subtitles_hearing_impaired">SDH 字幕</string>
     <string name="dolby_atmos">杜比全景聲 (Dolby Atmos)</string>
     <string name="dts_x">DTS:X</string>
-    <string name="dts_hd">DTS:HD</string>
+    <string name="dts_hd">DTS-HD</string>
     <string name="dca">DTS</string>
     <string name="ac3">DD</string>
     <string name="eac3">DD+</string>
@@ -693,4 +693,9 @@
     <string name="calendar_view_week">週</string>
     <string name="calendar_view_month">月</string>
     <string name="calendar_view_agenda">行程</string>
+    <string name="lbl_date_show_added">節目新增日期</string>
+    <string name="lbl_date_episode_added">集數新增日期</string>
+    <string name="truehd">TrueHD</string>
+    <string name="eac3_atmos">DD+ 全景聲</string>
+    <string name="truehd_atmos">TrueHD 全景聲</string>
 </resources>

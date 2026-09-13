@@ -531,7 +531,7 @@
     </plurals>
     <string name="dolby_vision">Dolby Vision</string>
     <string name="ac3">DD</string>
-    <string name="dts_hd">DTS:HD</string>
+    <string name="dts_hd">DTS-HD</string>
     <string name="past_week">Прошлая неделя</string>
     <string name="scheduled_in_next_24_hours">Запланировано на следующие 24 часа</string>
     <string name="prefer_exoplayer_ffmpeg">Предпочитать FFmpeg для воспроизведения аудио</string>
@@ -721,4 +721,14 @@
     <string name="calendar_view_week">Неделя</string>
     <string name="calendar_view_month">Месяц</string>
     <string name="calendar_view_agenda">Список</string>
+    <string name="lbl_date_show_added">Дата добавления сериала</string>
+    <string name="lbl_date_episode_added">Дата добавления эпизода</string>
+    <string name="preference_enable_ass">Прямое воспроизведение ASS-субтитров</string>
+    <string name="preference_enable_pgs_description">Требует перекодирования когда выключено</string>
+    <string name="preference_enable_ass_description">Экспериментальная функция, может работать нестабильно</string>
+    <string name="pref_software_codecs_enabled">Использовать программные кодеки</string>
+    <string name="pref_software_codecs_enabled_description">Некоторые программные кодеки могут ухудшить производительность. Отключение этой опции повышает вероятность перекодирования.</string>
+    <string name="truehd">TrueHD</string>
+    <string name="eac3_atmos">DD+ Atmos</string>
+    <string name="truehd_atmos">TrueHD Atmos</string>
 </resources>
